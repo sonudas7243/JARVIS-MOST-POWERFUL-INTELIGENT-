@@ -1148,8 +1148,28 @@ box-shadow:0 0 60px rgba(239,68,68,0.2);
 <div class="settings-section-title">Admin</div>
 <button class="btn btn-outline" id="admin-panel-btn" style="width:100%;">Open Admin Dashboard</button>
 <button class="clear-btn" id="clear-chat-btn" style="margin-top:8px;">Clear Chat History</button>
+<button class="clear-btn" id="logout-btn" style="margin-top:8px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#ef4444;">🔒 Logout</button>
 </div>
-<div class="support-link">Support: <span>@im_brave_boy</span> on Instagram</div>
+<div style="text-align:center;padding:16px;margin-top:12px;background:linear-gradient(135deg,rgba(236,72,153,0.08),rgba(139,92,246,0.06));border-radius:20px;border:1px solid rgba(236,72,153,0.2);cursor:pointer;" onclick="window.open('https://instagram.com/im_brave_boy','_blank')">
+  
+  <svg width="44" height="44" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-bottom:8px;">
+    <rect x="2" y="2" width="20" height="20" rx="5" fill="url(#instagrad3)"/>
+    <circle cx="12" cy="12" r="5" stroke="white" stroke-width="2" fill="none"/>
+    <circle cx="17.5" cy="6.5" r="1.5" fill="white"/>
+    <defs>
+      <linearGradient id="instagrad3" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#f09433"/>
+        <stop offset="25%" stop-color="#e6683c"/>
+        <stop offset="50%" stop-color="#dc2743"/>
+        <stop offset="75%" stop-color="#cc2366"/>
+        <stop offset="100%" stop-color="#bc1888"/>
+      </linearGradient>
+    </defs>
+  </svg>
+  
+  <div style="font-size:13px;color:#f1f5f9;font-weight:700;margin-bottom:6px;">Having trouble?</div>
+  <div style="font-size:10px;color:#94a3b8;margin-bottom:8px;line-height:1.5;">If you face any issue or bug in the app,<br>connect with us on Instagram</div>
+  <div style="display:inline-block;background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);color:#fff;padding:8px 20px;border-radius:20px;font-size:12px;font-weight:700;letter-spacing:0.5px;">@im_brave_boy 💗</div>
 </div>
 </div>
 
@@ -1659,6 +1679,22 @@ function loadSettings() {
   STATE.apiKeys = keys;
   STATE.elevenlabsKey = keys.elevenlabs || '';
   STATE.elevenlabsVoiceId = keys.voiceid || '';
+
+  // 🔽 Yeh ADD karo
+  setTimeout(function() {
+    var apiKeys = storage.get(STORAGE_KEYS.apiKeys, {});
+    if (apiKeys.openrouter) document.getElementById('api-openrouter').value = apiKeys.openrouter;
+    if (apiKeys.youtube) document.getElementById('api-youtube').value = apiKeys.youtube;
+    if (apiKeys.weather) document.getElementById('api-weather').value = apiKeys.weather;
+    if (apiKeys.gnews) document.getElementById('api-gnews').value = apiKeys.gnews;
+    if (apiKeys.whatsapp) document.getElementById('api-whatsapp').value = apiKeys.whatsapp;
+    if (apiKeys.elevenlabs) document.getElementById('api-elevenlabs').value = apiKeys.elevenlabs;
+    if (apiKeys.voiceid) document.getElementById('api-voiceid').value = apiKeys.voiceid;
+    if (apiKeys.google) document.getElementById('api-google').value = apiKeys.google;
+    if (apiKeys.maps) document.getElementById('api-maps').value = apiKeys.maps;
+    if (apiKeys.gemini) document.getElementById('api-gemini').value = apiKeys.gemini;
+  }, 500);
+  // 🔼 Yeh ADD karo
 }
 
 function loadData() {
@@ -1805,12 +1841,13 @@ function setupEventListeners() {
     micBtn.addEventListener('mousedown', (e) => e.preventDefault());
   }
   if (overlay) overlay.addEventListener('click', closeAllWindows);
-  if (saveApiBtn) saveApiBtn.addEventListener('click', saveApiKeys);
-  if (clearChatBtn) clearChatBtn.addEventListener('click', clearChat);
-  if (adminPanelBtn) adminPanelBtn.addEventListener('click', openAdminPanel);
-  if (adminCloseBtn) adminCloseBtn.addEventListener('click', closeAdminPanel);
-  if (installBtn) installBtn.addEventListener('click', installApp);
-
+if (saveApiBtn) saveApiBtn.addEventListener('click', saveApiKeys);
+if (clearChatBtn) clearChatBtn.addEventListener('click', clearChat);
+if (adminPanelBtn) adminPanelBtn.addEventListener('click', openAdminPanel);
+if (adminCloseBtn) adminCloseBtn.addEventListener('click', closeAdminPanel);
+if (installBtn) installBtn.addEventListener('click', installApp);
+var logoutBtn = document.getElementById('logout-btn');
+if (logoutBtn) logoutBtn.addEventListener('click', logoutUser);
   // Login enter key
   document.getElementById('login-pass').addEventListener('keydown', (e) => {
     if (e.key === 'Enter') handleLogin();
@@ -2089,7 +2126,7 @@ function closeSettings() {
 }
 
 function saveApiKeys() {
-  const keys = {
+  var keys = {
     openrouter: document.getElementById('api-openrouter').value.trim(),
     youtube: document.getElementById('api-youtube').value.trim(),
     weather: document.getElementById('api-weather').value.trim(),
@@ -2101,11 +2138,14 @@ function saveApiKeys() {
     maps: document.getElementById('api-maps').value.trim(),
     gemini: document.getElementById('api-gemini').value.trim(),
   };
+
+  // Permanent save karo
   storage.set(STORAGE_KEYS.apiKeys, keys);
   STATE.apiKeys = keys;
   STATE.elevenlabsKey = keys.elevenlabs;
   STATE.elevenlabsVoiceId = keys.voiceid;
-  showToast('API keys saved successfully');
+
+  showToast('API keys saved successfully! Permanent save.');
 }
 
 function clearChat() {
