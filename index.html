@@ -1,0 +1,3674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>JARVIS AI ASSISTANT</title>
+<style>
+:root {
+--bg-primary: #0a0a0a;
+--bg-secondary: #0f0f0f;
+--bg-card: #111111;
+--bg-glass: rgba(15,20,30,0.85);
+--teal: #0d9488;
+--teal-light: #14b8a6;
+--teal-glow: rgba(13,148,136,0.3);
+--purple: #7c3aed;
+--purple-light: #8b5cf6;
+--purple-glow: rgba(124,58,237,0.3);
+--gray-dark: #1f2937;
+--gray-mid: #374151;
+--gray-light: #6b7280;
+--text-primary: #f9fafb;
+--text-secondary: #9ca3af;
+--text-muted: #6b7280;
+--border: rgba(255,255,255,0.06);
+--border-glow: rgba(13,148,136,0.4);
+--danger-low: #22c55e;
+--danger-med: #eab308;
+--danger-high: #f97316;
+--danger-crit: #ef4444;
+--red: #ef4444;
+--blue: #3b82f6;
+--shadow-teal: 0 0 30px rgba(13,148,136,0.2);
+--shadow-purple: 0 0 30px rgba(124,58,237,0.2);
+--shadow-card: 0 8px 32px rgba(0,0,0,0.6);
+--radius-sm: 8px;
+--radius-md: 12px;
+--radius-lg: 16px;
+--radius-xl: 20px;
+--radius-full: 9999px;
+--font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+--font-mono: 'Courier New', monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg-primary);color:var(--text-primary);font-family:var(--font);font-size:14px;}
+body{display:flex;flex-direction:column;position:relative;}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:3px;height:3px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--teal);border-radius:2px;}
+
+/* GLASS MORPHISM */
+.glass{background:var(--bg-glass);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid var(--border);}
+
+/* GLOW TEXT */
+.glow-teal{text-shadow:0 0 12px var(--teal),0 0 24px var(--teal-light);}
+.glow-purple{text-shadow:0 0 12px var(--purple),0 0 24px var(--purple-light);}
+
+/* ANIMATIONS */
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.25);opacity:0.8;}}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+@keyframes slideInRight{from{transform:translateX(100%);}to{transform:translateX(0);}}
+@keyframes slideInUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
+@keyframes dot1{0%,60%,100%{transform:translateY(0);}30%{transform:translateY(-6px);}}
+@keyframes dot2{0%,60%,100%{transform:translateY(0);}30%{transform:translateY(-6px);}}
+@keyframes dot3{0%,60%,100%{transform:translateY(0);}30%{transform:translateY(-6px);}}
+@keyframes rotate{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+@keyframes scanline{0%{top:-100%;}100%{top:100%;}}
+@keyframes hologram{0%,100%{opacity:0.8;transform:scaleX(1);}50%{opacity:1;transform:scaleX(1.02);}}
+@keyframes neonPulse{0%,100%{box-shadow:0 0 5px var(--teal),0 0 10px var(--teal),0 0 20px var(--teal-light);}50%{box-shadow:0 0 10px var(--teal),0 0 25px var(--teal),0 0 50px var(--teal-light);}}
+@keyframes gridMove{0%{background-position:0 0;}100%{background-position:50px 50px;}}
+@keyframes matrixRain{0%{transform:translateY(-100%);}100%{transform:translateY(200vh);}}
+@keyframes waveform{0%,100%{height:4px;}50%{height:16px;}}
+@keyframes shimmer{0%{background-position:-200% 0;}100%{background-position:200% 0;}}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+@keyframes ripple{0%{transform:scale(0);opacity:1;}100%{transform:scale(4);opacity:0;}}
+
+/* GRID BACKGROUND */
+.grid-bg{
+position:fixed;inset:0;pointer-events:none;z-index:0;
+background-image:
+linear-gradient(rgba(13,148,136,0.03) 1px,transparent 1px),
+linear-gradient(90deg,rgba(13,148,136,0.03) 1px,transparent 1px);
+background-size:50px 50px;
+animation:gridMove 8s linear infinite;
+}
+
+/* LOGIN SCREEN */
+#login-screen{
+position:fixed;inset:0;z-index:9999;
+background:radial-gradient(ellipse at center,#0a1628 0%,#0a0a0a 70%);
+display:flex;flex-direction:column;align-items:center;justify-content:center;
+gap:24px;padding:24px;
+}
+.login-orb{
+width:120px;height:120px;border-radius:50%;
+background:conic-gradient(from 0deg,var(--teal),var(--purple),var(--teal));
+display:flex;align-items:center;justify-content:center;
+animation:rotate 4s linear infinite;
+box-shadow:0 0 60px rgba(13,148,136,0.5),0 0 120px rgba(124,58,237,0.3);
+position:relative;
+}
+.login-orb-inner{
+width:100px;height:100px;border-radius:50%;
+background:var(--bg-primary);
+display:flex;align-items:center;justify-content:center;
+font-size:36px;font-weight:900;
+background:linear-gradient(135deg,#0d9488,#7c3aed);
+-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.login-title{font-size:32px;font-weight:900;letter-spacing:8px;text-transform:uppercase;background:linear-gradient(135deg,var(--teal),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.login-subtitle{font-size:12px;color:var(--text-muted);letter-spacing:4px;text-transform:uppercase;}
+.login-card{
+width:100%;max-width:380px;padding:32px;border-radius:var(--radius-xl);
+background:rgba(15,25,40,0.9);
+border:1px solid rgba(13,148,136,0.3);
+box-shadow:0 0 60px rgba(13,148,136,0.1),0 0 120px rgba(124,58,237,0.05);
+display:flex;flex-direction:column;gap:16px;
+}
+.login-input-group{display:flex;flex-direction:column;gap:6px;}
+.login-label{font-size:11px;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;}
+.login-input{
+background:rgba(255,255,255,0.04);
+border:1px solid rgba(13,148,136,0.2);
+border-radius:var(--radius-md);
+padding:14px 16px;
+color:var(--text-primary);
+font-size:14px;
+font-family:var(--font);
+outline:none;
+transition:all 0.3s;
+}
+.login-input:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(13,148,136,0.1);}
+.login-input::placeholder{color:var(--text-muted);}
+.login-btn{
+background:linear-gradient(135deg,var(--teal),var(--teal-light));
+border:none;border-radius:var(--radius-md);
+padding:16px;color:#fff;
+font-size:14px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+cursor:pointer;transition:all 0.3s;
+position:relative;overflow:hidden;
+}
+.login-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(13,148,136,0.4);}
+.login-btn:active{transform:translateY(0);}
+.login-fp-btn{
+background:rgba(124,58,237,0.1);
+border:1px solid rgba(124,58,237,0.3);
+border-radius:var(--radius-md);
+padding:14px;color:var(--purple-light);
+font-size:13px;font-weight:600;
+cursor:pointer;transition:all 0.3s;
+display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.login-fp-btn:hover{background:rgba(124,58,237,0.2);transform:translateY(-2px);}
+.login-error{color:var(--red);font-size:12px;text-align:center;display:none;}
+
+/* MAIN APP */
+#app{
+display:flex;flex-direction:column;height:100vh;height:100dvh;
+position:relative;z-index:1;
+overflow:hidden;
+}
+
+/* TOP BAR */
+#topbar{
+display:flex;align-items:center;justify-content:space-between;
+padding:10px 14px;
+background:rgba(10,10,10,0.95);
+border-bottom:1px solid var(--border);
+position:relative;z-index:100;
+gap:8px;
+flex-shrink:0;
+}
+.topbar-left{display:flex;align-items:center;gap:10px;flex:1;min-width:0;}
+.logo-icon{
+width:36px;height:36px;border-radius:50%;
+background:conic-gradient(from 0deg,var(--teal),var(--purple),var(--teal));
+display:flex;align-items:center;justify-content:center;
+font-size:14px;font-weight:900;color:#fff;
+animation:rotate 8s linear infinite;
+flex-shrink:0;
+}
+.logo-text{font-size:16px;font-weight:900;letter-spacing:4px;background:linear-gradient(135deg,var(--teal),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;flex-shrink:0;}
+.model-badge{
+padding:3px 8px;border-radius:var(--radius-full);
+font-size:9px;font-weight:700;letter-spacing:1px;
+flex-shrink:0;
+}
+.badge-fast{background:rgba(13,148,136,0.2);color:var(--teal-light);border:1px solid var(--teal);}
+.badge-power{background:rgba(124,58,237,0.2);color:var(--purple-light);border:1px solid var(--purple);}
+.topbar-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.clock-block{display:flex;flex-direction:column;align-items:flex-end;gap:1px;}
+.clock-time{font-size:12px;font-weight:700;color:var(--teal-light);font-family:var(--font-mono);}
+.clock-date{font-size:9px;color:var(--text-muted);font-family:var(--font-mono);}
+.net-badge{
+display:flex;align-items:center;gap:4px;
+padding:3px 7px;border-radius:var(--radius-full);
+font-size:9px;font-weight:600;
+}
+.net-online{background:rgba(34,197,94,0.1);color:#22c55e;border:1px solid rgba(34,197,94,0.3);}
+.net-offline{background:rgba(239,68,68,0.1);color:var(--red);border:1px solid rgba(239,68,68,0.3);}
+.settings-btn{
+width:32px;height:32px;border-radius:50%;
+background:rgba(255,255,255,0.06);
+border:1px solid var(--border);
+display:flex;align-items:center;justify-content:center;
+cursor:pointer;transition:all 0.3s;font-size:14px;
+}
+.settings-btn:hover{background:rgba(13,148,136,0.2);border-color:var(--teal);}
+
+/* QUICK BAR */
+#quickbar{
+padding:8px 12px;
+background:rgba(10,10,10,0.9);
+border-bottom:1px solid var(--border);
+flex-shrink:0;
+overflow-x:auto;
+white-space:nowrap;
+scrollbar-width:none;
+}
+#quickbar::-webkit-scrollbar{display:none;}
+.quick-pills{display:inline-flex;gap:6px;padding:2px 0;}
+.pill{
+display:inline-flex;align-items:center;gap:5px;
+padding:6px 12px;border-radius:var(--radius-full);
+background:rgba(255,255,255,0.04);
+border:1px solid var(--border);
+font-size:11px;font-weight:600;color:var(--text-secondary);
+cursor:pointer;transition:all 0.25s;white-space:nowrap;
+user-select:none;
+}
+.pill:hover,.pill.active{background:rgba(13,148,136,0.15);border-color:var(--teal);color:var(--teal-light);transform:translateY(-1px);}
+.pill:active{transform:scale(0.95);}
+
+/* CHAT AREA */
+#chat-area {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    padding: 12px;
+    padding-bottom: 120px;       /* ← 120 KARO */
+    margin-bottom: 10px;         /* ← YEH LINE ADD KARO */
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+.msg-wrapper{display:flex;flex-direction:column;animation:fadeInUp 0.3s ease;}
+.msg-wrapper.user{align-items:flex-end;}
+.msg-wrapper.ai{align-items:flex-start;}
+.msg-bubble{
+max-width:82%;padding:10px 14px;
+border-radius:var(--radius-xl);
+font-size:13.5px;line-height:1.55;
+word-break:break-word;
+position:relative;
+}
+.msg-bubble.user{background:var(--teal);color:#fff;border-bottom-right-radius:4px;}
+.msg-bubble.ai{background:var(--gray-dark);color:var(--text-primary);border-bottom-left-radius:4px;border:1px solid rgba(255,255,255,0.05);}
+.msg-time{font-size:9px;color:var(--text-muted);margin-top:3px;padding:0 4px;}
+.cursor-blink{display:inline-block;width:2px;height:14px;background:var(--teal-light);margin-left:2px;animation:blink 0.8s infinite;vertical-align:text-bottom;}
+.typing-indicator{display:flex;align-items:center;gap:4px;padding:12px 16px;background:var(--gray-dark);border-radius:var(--radius-xl) var(--radius-xl) var(--radius-xl) 4px;border:1px solid rgba(255,255,255,0.05);width:fit-content;}
+.typing-dot{width:6px;height:6px;border-radius:50%;background:var(--teal-light);}
+.typing-dot:nth-child(1){animation:dot1 1.2s ease infinite;}
+.typing-dot:nth-child(2){animation:dot2 1.2s ease 0.15s infinite;}
+.typing-dot:nth-child(3){animation:dot3 1.2s ease 0.3s infinite;}
+.msg-actions{display:flex;gap:6px;padding:2px 4px;}
+.msg-action-btn{background:none;border:none;color:var(--text-muted);font-size:10px;cursor:pointer;padding:2px 6px;border-radius:4px;transition:all 0.2s;}
+.msg-action-btn:hover{color:var(--teal-light);background:rgba(13,148,136,0.1);}
+.retry-btn{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:var(--red);padding:4px 10px;border-radius:var(--radius-full);font-size:11px;cursor:pointer;margin-top:4px;}
+
+/* BOTTOM BAR */
+#bottombar{
+padding:10px 12px;
+background:rgba(10,10,10,0.95);
+border-top:1px solid var(--border);
+display:flex;align-items:flex-end;gap:8px;
+flex-shrink:0;
+position:sticky;
+bottom:0;
+z-index:100;
+}
+.mic-btn{
+width:44px;height:44px;border-radius:50%;
+background:rgba(239,68,68,0.15);
+border:1.5px solid rgba(239,68,68,0.4);
+display:flex;align-items:center;justify-content:center;
+cursor:pointer;transition:all 0.3s;
+font-size:18px;flex-shrink:0;
+position:relative;
+}
+.mic-btn.listening{background:rgba(239,68,68,0.3);border-color:var(--red);animation:neonPulse 0.8s ease infinite;}
+.mic-btn::before{content:'';position:absolute;inset:-4px;border-radius:50%;border:2px solid rgba(239,68,68,0.3);animation:pulse 1.5s ease infinite;opacity:0;}
+.mic-btn.listening::before{opacity:1;}
+.input-wrapper{
+flex:1;
+background:rgba(255,255,255,0.04);
+border:1px solid var(--border);
+border-radius:var(--radius-lg);
+padding:10px 12px;
+display:flex;align-items:flex-end;gap:8px;
+transition:border-color 0.3s;
+}
+.input-wrapper:focus-within{border-color:rgba(13,148,136,0.5);}
+#msg-input{
+flex:1;background:none;border:none;outline:none;
+color:var(--text-primary);font-size:14px;font-family:var(--font);
+resize:none;max-height:90px;min-height:20px;
+line-height:1.4;
+}
+#msg-input::placeholder{color:var(--text-muted);}
+.send-btn{
+width:34px;height:34px;border-radius:50%;
+background:var(--teal);
+border:none;display:flex;align-items:center;justify-content:center;
+cursor:pointer;transition:all 0.3s;font-size:14px;
+flex-shrink:0;
+}
+.send-btn:disabled{background:rgba(13,148,136,0.3);cursor:not-allowed;}
+.send-btn:not(:disabled):hover{background:var(--teal-light);transform:scale(1.1);}
+.send-btn:active{transform:scale(0.95);}
+
+/* SETTINGS PANEL */
+#settings-panel{
+position:fixed;top:0;right:-100%;width:85%;max-width:360px;height:100%;
+background:rgba(8,12,20,0.98);
+border-left:1px solid rgba(13,148,136,0.2);
+z-index:500;
+transition:right 0.35s cubic-bezier(0.25,0.46,0.45,0.94);
+display:flex;flex-direction:column;
+backdrop-filter:blur(24px);
+}
+#settings-panel.open{right:0;}
+.settings-header{
+padding:16px;
+border-bottom:1px solid var(--border);
+display:flex;align-items:center;justify-content:space-between;
+}
+.settings-title{font-size:16px;font-weight:700;letter-spacing:2px;color:var(--teal-light);}
+.close-btn{
+width:30px;height:30px;border-radius:50%;
+background:rgba(255,255,255,0.06);
+border:none;color:var(--text-secondary);
+font-size:16px;cursor:pointer;
+display:flex;align-items:center;justify-content:center;
+transition:all 0.2s;
+}
+.close-btn:hover{background:rgba(239,68,68,0.2);color:var(--red);}
+.settings-body{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:20px;}
+.settings-section{display:flex;flex-direction:column;gap:10px;}
+.settings-section-title{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--text-muted);padding-bottom:6px;border-bottom:1px solid var(--border);}
+.api-input-group{display:flex;flex-direction:column;gap:4px;}
+.api-label{font-size:11px;color:var(--text-secondary);}
+.api-input-row{display:flex;gap:6px;align-items:center;}
+.api-input{
+flex:1;background:rgba(255,255,255,0.04);
+border:1px solid var(--border);border-radius:var(--radius-sm);
+padding:9px 12px;color:var(--text-primary);font-size:12px;
+font-family:var(--font-mono);outline:none;transition:all 0.3s;
+}
+.api-input:focus{border-color:var(--teal);}
+.eye-btn{background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:14px;padding:4px;}
+.settings-toggle-row{
+display:flex;align-items:center;justify-content:space-between;
+padding:8px 0;
+}
+.toggle-label{font-size:13px;color:var(--text-secondary);}
+.toggle{
+width:44px;height:24px;border-radius:var(--radius-full);
+background:rgba(255,255,255,0.1);
+position:relative;cursor:pointer;transition:all 0.3s;
+border:1px solid var(--border);
+}
+.toggle.on{background:var(--teal);}
+.toggle-*****{
+position:absolute;top:2px;left:2px;
+width:18px;height:18px;border-radius:50%;
+background:#fff;transition:all 0.3s;
+}
+.toggle.on .toggle-*****{left:22px;}
+.model-selector{display:flex;gap:8px;}
+.model-option{
+flex:1;padding:10px;border-radius:var(--radius-md);
+border:1px solid var(--border);
+background:rgba(255,255,255,0.03);
+cursor:pointer;text-align:center;font-size:11px;font-weight:600;
+transition:all 0.3s;
+}
+.model-option.selected.fast{border-color:var(--teal);background:rgba(13,148,136,0.1);color:var(--teal-light);}
+.model-option.selected.power{border-color:var(--purple);background:rgba(124,58,237,0.1);color:var(--purple-light);}
+.lang-select,.tts-select{
+background:rgba(255,255,255,0.04);
+border:1px solid var(--border);border-radius:var(--radius-sm);
+padding:9px 12px;color:var(--text-primary);font-size:12px;
+outline:none;width:100%;
+}
+.clear-btn{
+background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);
+color:var(--red);padding:12px;border-radius:var(--radius-md);
+font-size:13px;font-weight:600;cursor:pointer;
+transition:all 0.3s;text-align:center;
+}
+.clear-btn:hover{background:rgba(239,68,68,0.2);}
+.support-link{
+text-align:center;color:var(--text-muted);font-size:12px;
+padding:8px;
+}
+.support-link span{color:var(--purple-light);}
+
+/* MINI WINDOWS OVERLAY */
+#windows-overlay{
+position:fixed;inset:0;z-index:200;
+background:rgba(0,0,0,0.7);
+backdrop-filter:blur(4px);
+display:none;
+}
+#windows-overlay.show{display:block;}
+
+/* MINI WINDOW BASE */
+.mini-window{
+position:fixed;bottom:0;left:0;right:0;
+height:70vh;
+background:rgba(8,12,22,0.97);
+border-top:1px solid rgba(13,148,136,0.3);
+border-radius:24px 24px 0 0;
+z-index:201;
+display:none;
+flex-direction:column;
+backdrop-filter:blur(32px);
+box-shadow:0 -8px 60px rgba(13,148,136,0.15);
+animation:slideInUp 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
+}
+.mini-window.show{display:flex;}
+.win-header{
+display:flex;align-items:center;justify-content:space-between;
+padding:14px 16px;
+border-bottom:1px solid var(--border);
+flex-shrink:0;
+}
+.win-title{font-size:14px;font-weight:700;color:var(--teal-light);letter-spacing:1px;}
+.win-close{
+width:28px;height:28px;border-radius:50%;
+background:rgba(255,255,255,0.06);
+border:none;color:var(--text-secondary);
+font-size:14px;cursor:pointer;
+display:flex;align-items:center;justify-content:center;
+}
+.win-close:hover{background:rgba(239,68,68,0.2);color:var(--red);}
+.win-body{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;}
+
+/* BUTTONS COMMON */
+.btn{
+padding:10px 18px;border-radius:var(--radius-md);
+font-size:13px;font-weight:600;cursor:pointer;
+transition:all 0.25s;border:none;
+}
+.btn-teal{background:var(--teal);color:#fff;}
+.btn-teal:hover{background:var(--teal-light);transform:translateY(-1px);}
+.btn-purple{background:var(--purple);color:#fff;}
+.btn-purple:hover{background:var(--purple-light);transform:translateY(-1px);}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text-secondary);}
+.btn-outline:hover{border-color:var(--teal);color:var(--teal-light);}
+.btn:active{transform:scale(0.96);}
+
+/* SEARCH INPUT */
+.search-input{
+background:rgba(255,255,255,0.04);
+border:1px solid var(--border);border-radius:var(--radius-md);
+padding:11px 14px;color:var(--text-primary);font-size:13px;
+outline:none;width:100%;transition:all 0.3s;
+font-family:var(--font);
+}
+.search-input:focus{border-color:var(--teal);}
+.search-input::placeholder{color:var(--text-muted);}
+.search-row{display:flex;gap:8px;align-items:center;}
+.search-row .search-input{flex:1;}
+
+/* CARD */
+.card{
+background:rgba(255,255,255,0.03);
+border:1px solid var(--border);
+border-radius:var(--radius-md);
+padding:12px;
+transition:all 0.2s;
+}
+.card:hover{border-color:rgba(13,148,136,0.3);background:rgba(13,148,136,0.05);}
+
+/* 🎀 YOUTUBE LIQUID GLASS STYLE */
+#yt-player-container > div {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border);
+}
+
+#yt-results .card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  margin-bottom: 4px;
+}
+
+#yt-results .card:hover {
+  background: rgba(13,148,136,0.08);
+  border-color: var(--teal);
+}
+/* WEATHER WINDOW */
+.weather-bg{
+border-radius:var(--radius-lg);padding:20px;
+background:linear-gradient(135deg,#1e3a5f,#2d5016);
+transition:background 1s ease;
+text-align:center;
+}
+.weather-city{font-size:20px;font-weight:700;}
+.weather-temp{font-size:56px;font-weight:900;line-height:1;}
+.weather-desc{font-size:14px;color:rgba(255,255,255,0.8);margin:4px 0;}
+.weather-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;}
+.weather-stat{background:rgba(0,0,0,0.2);border-radius:var(--radius-sm);padding:8px;text-align:center;}
+.weather-stat-val{font-size:14px;font-weight:700;}
+.weather-stat-key{font-size:10px;color:rgba(255,255,255,0.6);}
+.forecast-scroll{display:flex;gap:8px;overflow-x:auto;padding:4px 0;}
+.forecast-card{
+flex-shrink:0;background:rgba(255,255,255,0.06);
+border:1px solid rgba(255,255,255,0.1);
+border-radius:var(--radius-md);padding:10px 12px;text-align:center;
+min-width:68px;
+}
+.forecast-day{font-size:10px;color:var(--text-muted);}
+.forecast-icon{font-size:20px;margin:4px 0;}
+.forecast-temp{font-size:13px;font-weight:700;}
+
+/* NEWS WINDOW */
+.news-tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;}
+.news-tabs::-webkit-scrollbar{display:none;}
+.news-tab{
+padding:5px 12px;border-radius:var(--radius-full);
+font-size:11px;font-weight:600;cursor:pointer;
+background:rgba(255,255,255,0.04);border:1px solid var(--border);
+color:var(--text-muted);transition:all 0.2s;white-space:nowrap;
+}
+.news-tab.active{background:rgba(13,148,136,0.15);border-color:var(--teal);color:var(--teal-light);}
+.news-card{
+display:flex;flex-direction:column;gap:8px;padding:12px;
+background:rgba(255,255,255,0.03);border:1px solid var(--border);
+border-radius:var(--radius-md);cursor:pointer;transition:all 0.2s;
+}
+.news-card:hover{border-color:rgba(13,148,136,0.3);}
+.news-img{
+width:100%;height:140px;border-radius:var(--radius-sm);
+background:rgba(255,255,255,0.05);
+object-fit:cover;
+display:flex;align-items:center;justify-content:center;
+color:var(--text-muted);font-size:24px;
+}
+.news-title{font-size:13px;font-weight:600;line-height:1.4;color:var(--text-primary);}
+.news-meta{font-size:10px;color:var(--text-muted);}
+
+/* MAPS WINDOW */
+.map-placeholder{
+width:100%;height:300px;border-radius:var(--radius-md);
+background:linear-gradient(135deg,#0a1628,#162040);
+border:1px solid rgba(13,148,136,0.2);
+display:flex;flex-direction:column;align-items:center;justify-content:center;
+gap:8px;color:var(--text-muted);font-size:14px;
+position:relative;overflow:hidden;
+}
+.map-grid-overlay{
+position:absolute;inset:0;
+background-image:linear-gradient(rgba(13,148,136,0.08) 1px,transparent 1px),linear-gradient(90deg,rgba(13,148,136,0.08) 1px,transparent 1px);
+background-size:30px 30px;
+}
+.map-pin{font-size:32px;animation:float 2s ease infinite;}
+.danger-legend{display:flex;gap:8px;flex-wrap:wrap;}
+.legend-item{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text-secondary);}
+.legend-dot{width:10px;height:10px;border-radius:50%;}
+.map-layer-btns{display:flex;gap:6px;flex-wrap:wrap;}
+.layer-btn{
+padding:5px 10px;border-radius:var(--radius-full);font-size:10px;font-weight:600;
+background:rgba(255,255,255,0.04);border:1px solid var(--border);
+color:var(--text-muted);cursor:pointer;transition:all 0.2s;
+}
+.layer-btn.active{background:rgba(239,68,68,0.15);border-color:var(--red);color:var(--red);}
+
+/* CAMERA WINDOW */
+.camera-view{
+width:100%;height:280px;border-radius:var(--radius-md);
+background:#000;border:1px solid rgba(13,148,136,0.2);
+display:flex;flex-direction:column;align-items:center;justify-content:center;
+gap:8px;color:var(--text-muted);position:relative;overflow:hidden;
+}
+.camera-scanline{
+position:absolute;left:0;right:0;height:2px;
+background:linear-gradient(90deg,transparent,var(--teal),transparent);
+animation:scanline 3s linear infinite;
+}
+.capture-btn{
+width:64px;height:64px;border-radius:50%;
+background:radial-gradient(circle,#fff 40%,rgba(255,255,255,0.8));
+border:4px solid rgba(255,255,255,0.3);
+cursor:pointer;transition:all 0.2s;margin:0 auto;
+display:block;
+}
+.capture-btn:active{transform:scale(0.9);}
+.camera-result{
+background:rgba(13,148,136,0.1);border:1px solid rgba(13,148,136,0.3);
+border-radius:var(--radius-md);padding:12px;font-size:13px;
+line-height:1.5;
+}
+
+/* FILE ANALYZER */
+.file-drop{
+border:2px dashed rgba(13,148,136,0.3);
+border-radius:var(--radius-lg);padding:32px;text-align:center;
+cursor:pointer;transition:all 0.3s;
+}
+.file-drop:hover{border-color:var(--teal);background:rgba(13,148,136,0.05);}
+.file-drop-icon{font-size:32px;margin-bottom:8px;}
+.file-drop-text{font-size:12px;color:var(--text-muted);}
+.file-history-item{
+display:flex;align-items:center;justify-content:space-between;
+padding:8px 12px;border-radius:var(--radius-sm);
+background:rgba(255,255,255,0.03);border:1px solid var(--border);
+}
+.file-history-name{font-size:12px;color:var(--text-secondary);}
+.file-history-date{font-size:10px;color:var(--text-muted);}
+
+/* NOTES WINDOW */
+.note-card{
+background:rgba(255,255,255,0.03);border:1px solid var(--border);
+border-radius:var(--radius-md);padding:12px;cursor:pointer;
+transition:all 0.2s;position:relative;overflow:hidden;
+}
+.note-card:hover{border-color:rgba(13,148,136,0.3);}
+.note-title{font-size:13px;font-weight:600;color:var(--text-primary);}
+.note-preview{font-size:11px;color:var(--text-muted);margin-top:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.note-date{font-size:10px;color:var(--text-muted);margin-top:6px;}
+.note-delete{position:absolute;top:8px;right:8px;background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:14px;}
+.note-delete:hover{color:var(--red);}
+
+/* TASKS WINDOW */
+.task-filter-tabs{display:flex;gap:6px;margin-bottom:4px;}
+.task-tab{
+padding:5px 12px;border-radius:var(--radius-full);
+font-size:11px;font-weight:600;cursor:pointer;
+background:rgba(255,255,255,0.04);border:1px solid var(--border);
+color:var(--text-muted);transition:all 0.2s;
+}
+.task-tab.active{background:rgba(13,148,136,0.15);border-color:var(--teal);color:var(--teal-light);}
+.task-item{
+display:flex;align-items:center;gap:10px;padding:10px 12px;
+background:rgba(255,255,255,0.03);border:1px solid var(--border);
+border-radius:var(--radius-md);transition:all 0.2s;
+}
+.task-checkbox{
+width:18px;height:18px;border-radius:4px;
+border:2px solid var(--teal);cursor:pointer;
+display:flex;align-items:center;justify-content:center;
+flex-shrink:0;transition:all 0.2s;background:transparent;
+}
+.task-checkbox.checked{background:var(--teal);}
+.task-text{flex:1;font-size:13px;color:var(--text-primary);transition:all 0.3s;}
+.task-text.done{text-decoration:line-through;color:var(--text-muted);}
+.task-del{background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:14px;}
+.task-del:hover{color:var(--red);}
+.task-counter{font-size:11px;color:var(--text-muted);text-align:center;}
+.task-add-row{display:flex;gap:8px;}
+
+/* GOOGLE SEARCH */
+.search-result-card{
+padding:12px;border-radius:var(--radius-md);
+background:rgba(255,255,255,0.03);border:1px solid var(--border);
+cursor:pointer;transition:all 0.2s;
+}
+.search-result-card:hover{border-color:rgba(13,148,136,0.3);}
+.search-result-title{font-size:13px;font-weight:600;color:var(--blue);margin-bottom:4px;}
+.search-result-url{font-size:10px;color:var(--teal-light);margin-bottom:6px;}
+.search-result-snippet{font-size:12px;color:var(--text-secondary);line-height:1.4;}
+
+/* CONTACTS WINDOW */
+.contact-card{
+display:flex;align-items:center;gap:12px;padding:10px 12px;
+background:rgba(255,255,255,0.03);border:1px solid var(--border);
+border-radius:var(--radius-md);transition:all 0.2s;
+}
+.contact-card:hover{border-color:rgba(13,148,136,0.2);}
+.contact-avatar{
+width:40px;height:40px;border-radius:50%;
+background:linear-gradient(135deg,var(--teal),var(--purple));
+display:flex;align-items:center;justify-content:center;
+font-size:16px;font-weight:700;color:#fff;flex-shrink:0;
+}
+.contact-info{flex:1;min-width:0;}
+.contact-name{font-size:13px;font-weight:600;color:var(--text-primary);}
+.contact-phone{font-size:11px;color:var(--text-muted);}
+.contact-actions{display:flex;gap:6px;}
+.contact-action-btn{
+width:30px;height:30px;border-radius:50%;
+background:rgba(255,255,255,0.06);border:1px solid var(--border);
+cursor:pointer;display:flex;align-items:center;justify-content:center;
+font-size:13px;transition:all 0.2s;
+}
+.contact-action-btn:hover{border-color:var(--teal);background:rgba(13,148,136,0.1);}
+
+/* WHATSAPP WINDOW */
+.wa-status{
+display:inline-flex;align-items:center;gap:6px;
+padding:4px 10px;border-radius:var(--radius-full);font-size:11px;font-weight:600;
+}
+.wa-status.sent{background:rgba(34,197,94,0.1);color:#22c55e;}
+.wa-status.pending{background:rgba(234,179,8,0.1);color:#eab308;}
+.spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,0.1);border-top-color:var(--teal);border-radius:50%;animation:rotate 0.8s linear infinite;}
+
+/* FEATURES PANEL */
+#features-bar{
+padding:6px 12px;
+background:rgba(10,10,10,0.9);
+border-bottom:1px solid var(--border);
+overflow-x:auto;white-space:nowrap;
+scrollbar-width:none;
+flex-shrink:0;
+display:none;
+}
+#features-bar::-webkit-scrollbar{display:none;}
+.feature-pill{
+display:inline-flex;align-items:center;gap:5px;
+padding:4px 10px;border-radius:var(--radius-full);
+background:rgba(124,58,237,0.08);
+border:1px solid rgba(124,58,237,0.2);
+font-size:10px;font-weight:600;color:var(--purple-light);
+cursor:pointer;margin-right:6px;transition:all 0.2s;
+}
+.feature-pill:hover{background:rgba(124,58,237,0.2);}
+
+/* ADMIN OVERLAY */
+#admin-panel{
+position:fixed;inset:0;z-index:9998;
+background:rgba(0,0,0,0.95);
+display:none;flex-direction:column;
+overflow:auto;padding:24px;
+}
+.admin-header{
+display:flex;align-items:center;justify-content:space-between;
+margin-bottom:24px;padding-bottom:16px;
+border-bottom:1px solid rgba(13,148,136,0.3);
+}
+.admin-title{font-size:20px;font-weight:700;color:var(--teal-light);letter-spacing:3px;}
+.admin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px;}
+.stat-card{
+background:rgba(13,148,136,0.08);border:1px solid rgba(13,148,136,0.2);
+border-radius:var(--radius-lg);padding:20px;text-align:center;
+}
+.stat-val{font-size:32px;font-weight:900;color:var(--teal-light);}
+.stat-key{font-size:11px;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;}
+.admin-section{background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;margin-bottom:16px;}
+.admin-section-title{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px;}
+.admin-table{width:100%;border-collapse:collapse;}
+.admin-table th,.admin-table td{padding:8px 12px;text-align:left;font-size:12px;border-bottom:1px solid var(--border);}
+.admin-table th{color:var(--text-muted);letter-spacing:1px;font-size:10px;text-transform:uppercase;}
+.admin-table td{color:var(--text-secondary);}
+
+/* TOAST */
+#toast{
+position:fixed;bottom:100px;left:50%;transform:translateX(-50%);
+background:rgba(13,148,136,0.9);color:#fff;
+padding:10px 20px;border-radius:var(--radius-full);
+font-size:12px;font-weight:600;z-index:9999;
+transition:all 0.3s;opacity:0;pointer-events:none;white-space:nowrap;
+}
+#toast.show{opacity:1;}
+
+/* WAVEFORM */
+.waveform{display:flex;align-items:center;gap:2px;height:24px;}
+.wave-bar{width:3px;border-radius:2px;background:var(--teal-light);}
+.wave-bar:nth-child(1){animation:waveform 0.8s ease infinite 0ms;}
+.wave-bar:nth-child(2){animation:waveform 0.8s ease infinite 100ms;}
+.wave-bar:nth-child(3){animation:waveform 0.8s ease infinite 200ms;}
+.wave-bar:nth-child(4){animation:waveform 0.8s ease infinite 300ms;}
+.wave-bar:nth-child(5){animation:waveform 0.8s ease infinite 400ms;}
+.wave-bar:nth-child(6){animation:waveform 0.8s ease infinite 300ms;}
+.wave-bar:nth-child(7){animation:waveform 0.8s ease infinite 200ms;}
+.wave-bar:nth-child(8){animation:waveform 0.8s ease infinite 100ms;}
+
+/* COMMAND LIST */
+.cmd-list{display:flex;flex-direction:column;gap:6px;}
+.cmd-item{
+display:flex;align-items:flex-start;gap:10px;padding:8px 12px;
+background:rgba(255,255,255,0.02);border:1px solid var(--border);
+border-radius:var(--radius-sm);
+}
+.cmd-trigger{font-size:11px;font-weight:700;color:var(--teal-light);font-family:var(--font-mono);min-width:120px;flex-shrink:0;}
+.cmd-action{font-size:11px;color:var(--text-muted);}
+
+/* NOTE EDITOR */
+.note-editor{display:flex;flex-direction:column;gap:8px;}
+.note-title-input,.note-content-input{
+background:rgba(255,255,255,0.04);border:1px solid var(--border);
+border-radius:var(--radius-md);padding:10px 12px;
+color:var(--text-primary);font-size:13px;font-family:var(--font);
+outline:none;transition:all 0.3s;
+}
+.note-title-input{font-weight:600;}
+.note-content-input{min-height:100px;resize:vertical;}
+.note-title-input:focus,.note-content-input:focus{border-color:var(--teal);}
+
+/* LOADER */
+.loader{
+display:flex;align-items:center;justify-content:center;
+padding:20px;
+}
+.loader-ring{
+width:32px;height:32px;border:3px solid rgba(13,148,136,0.1);
+border-top-color:var(--teal);border-radius:50%;
+animation:rotate 0.8s linear infinite;
+}
+
+/* SCROLLVIEW HORIZONTAL */
+.h-scroll{display:flex;gap:8px;overflow-x:auto;padding:4px 0;}
+.h-scroll::-webkit-scrollbar{display:none;}
+
+/* TEMP TOGGLE */
+.temp-toggle{display:flex;gap:4px;}
+.temp-option{
+padding:4px 12px;border-radius:var(--radius-full);
+font-size:12px;font-weight:600;cursor:pointer;
+background:rgba(255,255,255,0.04);border:1px solid var(--border);
+color:var(--text-muted);transition:all 0.2s;
+}
+.temp-option.active{background:rgba(13,148,136,0.15);border-color:var(--teal);color:var(--teal-light);}
+
+/* EXTRA FEATURES WINDOW */
+.feature-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;}
+.feature-card{
+background:rgba(124,58,237,0.05);border:1px solid rgba(124,58,237,0.15);
+border-radius:var(--radius-md);padding:14px;cursor:pointer;
+transition:all 0.25s;text-align:center;
+}
+.feature-card:hover{background:rgba(124,58,237,0.12);transform:translateY(-2px);}
+.feature-icon{font-size:22px;margin-bottom:6px;}
+.feature-name{font-size:11px;font-weight:600;color:var(--purple-light);}
+.feature-desc{font-size:10px;color:var(--text-muted);margin-top:3px;}
+
+/* RESPONSIVE */
+@media(min-width:768px){
+#app{max-width:480px;margin:0 auto;height:100vh;border-left:1px solid var(--border);border-right:1px solid var(--border);}
+.mini-window{max-width:480px;left:50%;transform:translateX(-50%);}
+}
+
+/* LIQUID GLASS EFFECT */
+.liquid-glass{
+background:linear-gradient(135deg,rgba(13,148,136,0.08),rgba(124,58,237,0.04));
+border:1px solid rgba(255,255,255,0.06);
+position:relative;overflow:hidden;
+}
+.liquid-glass::before{
+content:'';position:absolute;inset:0;
+background:linear-gradient(135deg,transparent 0%,rgba(255,255,255,0.02) 50%,transparent 100%);
+}
+
+/* HOLOGRAPHIC EFFECT */
+.holo{
+background:linear-gradient(135deg,rgba(13,148,136,0.1),rgba(124,58,237,0.1),rgba(13,148,136,0.1));
+background-size:200% 200%;
+animation:hologram 3s ease infinite;
+}
+
+/* STATUS BAR INDICATOR */
+.status-bar{
+height:2px;background:linear-gradient(90deg,var(--teal),var(--purple),var(--teal));
+background-size:200%;animation:shimmer 2s linear infinite;
+}
+
+/* INSTALL PROMPT */
+#install-prompt{
+position:fixed;bottom:0;left:0;right:0;z-index:9000;
+padding:16px;background:rgba(8,12,22,0.98);
+border-top:1px solid rgba(13,148,136,0.3);
+display:none;flex-direction:column;gap:10px;
+backdrop-filter:blur(24px);
+}
+#install-prompt.show{display:flex;}
+.install-row{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.install-text{font-size:13px;color:var(--text-secondary);}
+.install-text strong{color:var(--teal-light);}
+
+/* OFFLINE BANNER */
+#offline-banner{
+background:rgba(239,68,68,0.1);border-bottom:1px solid rgba(239,68,68,0.2);
+padding:6px 14px;font-size:11px;color:var(--red);text-align:center;
+display:none;flex-shrink:0;
+}
+#offline-banner.show{display:block;}
+
+/* VOICE PANEL */
+.voice-modal{
+position:fixed;inset:0;z-index:300;
+background:rgba(0,0,0,0.8);backdrop-filter:blur(8px);
+display:none;align-items:center;justify-content:center;
+}
+.voice-modal.show{display:flex;}
+.voice-panel{
+background:rgba(8,12,22,0.97);
+border:1px solid rgba(239,68,68,0.3);
+border-radius:var(--radius-xl);padding:32px;
+text-align:center;display:flex;flex-direction:column;
+align-items:center;gap:16px;width:280px;
+box-shadow:0 0 60px rgba(239,68,68,0.2);
+}
+.voice-icon{font-size:48px;}
+.voice-title{font-size:16px;font-weight:700;color:var(--red);}
+.voice-text{font-size:13px;color:var(--text-muted);min-height:40px;}
+</style>
+</head>
+<body>
+
+<div class="app-wrapper">
+<div class="grid-bg"></div>
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen">
+<div class="login-orb">
+<div class="login-orb-inner">J</div>
+</div>
+<div class="login-title">JARVIS</div>
+<div class="login-subtitle">Advanced AI Assistant</div>
+<div class="login-card glass">
+<div class="login-input-group">
+<div class="login-label">Email Address</div>
+<input class="login-input" id="login-email" type="email" placeholder="Enter admin email" value="">
+</div>
+<div class="login-input-group">
+<div class="login-label">Password</div>
+<input class="login-input" id="login-pass" type="password" placeholder="Enter password" value="">
+</div>
+<div class="login-error" id="login-error">Invalid credentials. Please try again.</div>
+<button class="login-btn" id="login-btn">AUTHENTICATE</button>
+<button class="login-fp-btn" id="fp-btn">Use Fingerprint / Face ID</button>
+</div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app">
+<div class="status-bar"></div>
+
+<!-- OFFLINE BANNER -->
+<div id="offline-banner">No internet connection. Running in offline mode.</div>
+
+<!-- TOP BAR -->
+<div id="topbar">
+<div class="topbar-left">
+<div class="logo-icon">J</div>
+<div class="logo-text">JARVIS</div>
+<div class="model-badge badge-fast" id="model-badge">FAST</div>
+</div>
+<div class="topbar-right">
+<div class="clock-block">
+<div class="clock-time" id="clock-time">--:-- --</div>
+<div class="clock-date" id="clock-date">--/--/----</div>
+</div>
+<div class="net-badge net-online" id="net-badge">Online</div>
+<div class="settings-btn" id="settings-btn" title="Settings">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+</svg>
+</div>
+</div>
+</div>
+
+<!-- QUICK BAR -->
+<div id="quickbar">
+<div class="quick-pills">
+<div class="pill" data-win="youtube">YouTube</div>
+<div class="pill" data-win="whatsapp">WhatsApp</div>
+<div class="pill" data-win="weather">Weather</div>
+<div class="pill" data-win="notes">Notes</div>
+<div class="pill" data-win="tasks">Tasks</div>
+<div class="pill" data-win="news">News</div>
+<div class="pill" data-win="maps">Maps</div>
+<div class="pill" data-win="files">Files</div>
+<div class="pill" data-win="camera">Camera</div>
+<div class="pill" data-win="google">Google</div>
+<div class="pill" data-win="contacts">Contacts</div>
+<div class="pill" data-win="extras">+ Features</div>
+</div>
+</div>
+
+<!-- CHAT AREA -->
+<div id="chat-area" class="chat-scroll"></div>
+
+<!-- BOTTOM BAR -->
+<div id="bottombar">
+<div class="mic-btn" id="mic-btn" title="Hold to speak">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2">
+<path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/>
+</svg>
+</div>
+<div class="input-wrapper">
+<textarea class="search-input" id="msg-input" placeholder="Ask JARVIS anything..." rows="1" style="border:none;background:none;padding:0;resize:none;max-height:80px;min-height:20px;line-height:1.4;flex:1;"></textarea>
+<button class="send-btn" id="send-btn" disabled>
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
+<line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+</svg>
+</button>
+</div>
+</div>
+</div>
+
+<!-- SETTINGS PANEL -->
+<div id="settings-panel">
+<div class="settings-header">
+<div class="settings-title">SETTINGS</div>
+<button class="close-btn" id="settings-close">x</button>
+</div>
+<div class="settings-body">
+<div class="settings-section">
+<div class="settings-section-title">API Keys</div>
+<div class="api-input-group">
+<div class="api-label">OpenRouter API Key</div>
+<div class="api-input-row">
+<input class="api-input" id="api-openrouter" type="password" placeholder="sk-or-...">
+<button class="eye-btn" data-target="api-openrouter">Show</button>
+</div>
+</div>
+    <div class="api-input-group">
+<div class="api-label">YouTube API Key</div>
+<div class="api-input-row">
+<input class="api-input" id="api-youtube" type="password" placeholder="AIza...">
+<button class="eye-btn" data-target="api-youtube">Show</button>
+</div>
+</div>
+<div class="api-input-group">
+<div class="api-label">OpenWeatherMap API Key</div>
+<div class="api-input-row">
+<input class="api-input" id="api-weather" type="password" placeholder="xxxxxxxxxxxxxxxx">
+<button class="eye-btn" data-target="api-weather">Show</button>
+</div>
+</div>
+<div class="api-input-group">
+<div class="api-label">GNews API Key</div>
+<div class="api-input-row">
+<input class="api-input" id="api-gnews" type="password" placeholder="xxxxxxxxxxxxxxxx">
+<button class="eye-btn" data-target="api-gnews">Show</button>
+</div>
+</div>
+<div class="api-input-group">
+<div class="api-label">WhatsApp (PickyAssist) API Key</div>
+<div class="api-input-row">
+<input class="api-input" id="api-whatsapp" type="password" placeholder="xxxxxxxxxxxxxxxx">
+<button class="eye-btn" data-target="api-whatsapp">Show</button>
+</div>
+</div>
+<div class="api-input-group">
+<div class="api-label">ElevenLabs API Key</div>
+<div class="api-input-row">
+<input class="api-input" id="api-elevenlabs" type="password" placeholder="xxxxxxxxxxxxxxxx">
+<button class="eye-btn" data-target="api-elevenlabs">Show</button>
+</div>
+</div>
+<div class="api-input-group">
+<div class="api-label">ElevenLabs Voice ID</div>
+<div class="api-input-row">
+<input class="api-input" id="api-voiceid" type="text" placeholder="voice_id_here">
+</div>
+</div>
+<div class="api-input-group">
+<div class="api-label">Google Search API Key</div>
+<div class="api-input-row">
+<input class="api-input" id="api-google" type="password" placeholder="AIza...">
+<button class="eye-btn" data-target="api-google">Show</button>
+</div>
+</div>
+<div class="api-input-group">
+<div class="api-label">Google Maps API Key</div>
+<div class="api-input-row">
+<input class="api-input" id="api-maps" type="password" placeholder="AIza...">
+<button class="eye-btn" data-target="api-maps">Show</button>
+</div>
+</div>
+<div class="api-input-group">
+<div class="api-label">Gemini API Key (File Analyzer)</div>
+<div class="api-input-row">
+<input class="api-input" id="api-gemini" type="password" placeholder="AIza...">
+<button class="eye-btn" data-target="api-gemini">Show</button>
+</div>
+</div>
+<button class="btn btn-teal" id="save-api-btn" style="margin-top:4px;">Save API Keys</button>
+</div>
+<div class="settings-section">
+<div class="settings-section-title">AI Model</div>
+<div class="model-selector">
+<div class="model-option fast selected" id="model-fast" data-model="fast">FAST<br><span style="font-size:9px;color:var(--text-muted);">gpt-oss-20b</span></div>
+<div class="model-option power" id="model-power" data-model="power">POWER<br><span style="font-size:9px;color:var(--text-muted);">gpt-oss-120b</span></div>
+<div class="model-option" id="model-auto" data-model="auto" style="color:var(--text-muted);">AUTO<br><span style="font-size:9px;">Smart</span></div>
+</div>
+</div>
+<div class="settings-section">
+<div class="settings-section-title">Voice Settings</div>
+<div class="api-input-group">
+<div class="api-label">Recognition Language</div>
+<select class="lang-select" id="voice-lang">
+<option value="en-US">English (en-US)</option>
+<option value="hi-IN">Hindi (hi-IN)</option>
+<option value="bn-IN">Bengali (bn-IN)</option>
+<option value="as-IN">Assamese (as-IN)</option>
+</select>
+</div>
+<div class="api-input-group" style="margin-top:8px;">
+<div class="api-label">TTS Engine</div>
+<select class="tts-select" id="tts-engine">
+<option value="browser">Browser TTS (Offline)</option>
+<option value="elevenlabs">ElevenLabs (Online)</option>
+</select>
+</div>
+</div>
+<div class="settings-section">
+<div class="settings-section-title">Preferences</div>
+<div class="settings-toggle-row">
+<div class="toggle-label">Speak AI Responses</div>
+<div class="toggle on" id="toggle-speak" data-key="speakResponses">
+<div class="toggle-*****"></div>
+</div>
+</div>
+<div class="settings-toggle-row">
+<div class="toggle-label">Continuous Listening</div>
+<div class="toggle" id="toggle-listen" data-key="continuousListen">
+<div class="toggle-*****"></div>
+</div>
+</div>
+<div class="settings-toggle-row">
+<div class="toggle-label">Dark Theme</div>
+<div class="toggle on" id="toggle-theme" data-key="darkTheme">
+<div class="toggle-*****"></div>
+</div>
+</div>
+<div class="settings-toggle-row">
+<div class="toggle-label">Show Features Bar</div>
+<div class="toggle" id="toggle-features" data-key="showFeatures">
+<div class="toggle-*****"></div>
+</div>
+</div>
+</div>
+<div class="settings-section">
+<div class="settings-section-title">Admin</div>
+<button class="btn btn-outline" id="admin-panel-btn" style="width:100%;">Open Admin Dashboard</button>
+<button class="clear-btn" id="clear-chat-btn" style="margin-top:8px;">Clear Chat History</button>
+</div>
+<div class="support-link">Support: <span>@im_brave_boy</span> on Instagram</div>
+</div>
+</div>
+
+<!-- WINDOWS OVERLAY -->
+<div id="windows-overlay"></div>
+
+<!-- YOUTUBE WINDOW -->
+<div class="mini-window" id="win-youtube">
+<div class="win-header">
+<div class="win-title">🎀 YouTube</div>
+<button class="win-close" data-win="youtube">x</button>
+</div>
+<div class="win-body">
+<div class="search-row">
+<input class="search-input" id="yt-search" placeholder="Search songs..." style="flex:1;">
+<button class="btn btn-teal" id="yt-search-btn">Search</button>
+</div>
+<div id="yt-player-container"></div>
+<div id="yt-results" style="display:flex;flex-direction:column;gap:6px;"></div>
+</div>
+</div>
+
+<!-- WHATSAPP WINDOW -->
+<div class="mini-window" id="win-whatsapp">
+<div class="win-header">
+<div class="win-title">WhatsApp</div>
+<button class="win-close" data-win="whatsapp">x</button>
+</div>
+<div class="win-body">
+<div class="api-input-group">
+<div class="api-label">PickyAssist API Key</div>
+<input class="search-input" id="wa-api-key" type="password" placeholder="API key...">
+</div>
+<div class="api-input-group">
+<div class="api-label">Country Code + Phone</div>
+<div class="search-row">
+<input class="search-input" id="wa-country" type="text" value="+91" style="width:60px;flex:none;">
+<input class="search-input" id="wa-phone" type="tel" placeholder="Phone number" style="flex:1;">
+</div>
+</div>
+<div class="api-input-group">
+<div class="api-label">Contact Selector</div>
+<select class="lang-select" id="wa-contact-select">
+<option value="">Select Contact</option>
+</select>
+</div>
+<div class="api-input-group">
+<div class="api-label">Message</div>
+<textarea class="search-input" id="wa-message" placeholder="Type your message..." rows="3" style="resize:none;"></textarea>
+</div>
+<div style="display:flex;align-items:center;gap:10px;">
+<button class="btn btn-teal" id="wa-send-btn" style="flex:1;">Send Message</button>
+<div id="wa-spinner" style="display:none;"><div class="spinner"></div></div>
+</div>
+<div id="wa-status" style="text-align:center;"></div>
+</div>
+</div>
+
+<!-- WEATHER WINDOW -->
+<div class="mini-window" id="win-weather">
+<div class="win-header">
+<div class="win-title">Weather</div>
+<button class="win-close" data-win="weather">x</button>
+</div>
+<div class="win-body">
+<div class="search-row">
+<input class="search-input" id="weather-city-input" placeholder="Search city..." style="flex:1;">
+<button class="btn btn-teal" id="weather-search-btn">Search</button>
+<button class="btn btn-outline" id="weather-gps-btn" title="Use GPS">GPS</button>
+</div>
+<div id="weather-display">
+<div class="weather-bg" id="weather-bg">
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+<div>
+<div class="weather-city" id="w-city">Guwahati, IN</div>
+<div style="font-size:12px;opacity:0.7;" id="w-date">--</div>
+</div>
+<div class="temp-toggle">
+<div class="temp-option active" id="temp-c">C</div>
+<div class="temp-option" id="temp-f">F</div>
+</div>
+</div>
+<div style="display:flex;align-items:center;gap:12px;">
+<div class="weather-temp" id="w-temp">--</div>
+<div>
+<div id="w-icon" style="font-size:36px;">--</div>
+<div class="weather-desc" id="w-desc">Loading...</div>
+</div>
+</div>
+<div class="weather-stats">
+<div class="weather-stat"><div class="weather-stat-val" id="w-feels">--</div><div class="weather-stat-key">Feels</div></div>
+<div class="weather-stat"><div class="weather-stat-val" id="w-humid">--</div><div class="weather-stat-key">Humidity</div></div>
+<div class="weather-stat"><div class="weather-stat-val" id="w-wind">--</div><div class="weather-stat-key">Wind</div></div>
+</div>
+<div style="display:flex;justify-content:space-between;margin-top:10px;font-size:11px;opacity:0.7;">
+<span>Sunrise: <span id="w-sunrise">--</span></span>
+<span>Sunset: <span id="w-sunset">--</span></span>
+</div>
+</div>
+<div style="margin-top:8px;">
+<div style="font-size:11px;color:var(--text-muted);margin-bottom:6px;">5-Day Forecast</div>
+<div class="forecast-scroll" id="forecast-container">
+<div class="forecast-card"><div class="forecast-day">Mon</div><div class="forecast-icon">Sun</div><div class="forecast-temp">32C</div></div>
+<div class="forecast-card"><div class="forecast-day">Tue</div><div class="forecast-icon">Cloud</div><div class="forecast-temp">28C</div></div>
+<div class="forecast-card"><div class="forecast-day">Wed</div><div class="forecast-icon">Rain</div><div class="forecast-temp">25C</div></div>
+<div class="forecast-card"><div class="forecast-day">Thu</div><div class="forecast-icon">Sun</div><div class="forecast-temp">31C</div></div>
+<div class="forecast-card"><div class="forecast-day">Fri</div><div class="forecast-icon">Cloud</div><div class="forecast-temp">29C</div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- NEWS WINDOW -->
+<div class="mini-window" id="win-news">
+<div class="win-header">
+<div class="win-title">News</div>
+<button class="win-close" data-win="news">x</button>
+</div>
+<div class="win-body">
+<div class="news-tabs">
+<div class="news-tab active" data-cat="general">General</div>
+<div class="news-tab" data-cat="business">Business</div>
+<div class="news-tab" data-cat="technology">Tech</div>
+<div class="news-tab" data-cat="sports">Sports</div>
+<div class="news-tab" data-cat="entertainment">Entertainment</div>
+<div class="news-tab" data-cat="health">Health</div>
+<div class="news-tab" data-cat="science">Science</div>
+</div>
+<div id="news-container" style="display:flex;flex-direction:column;gap:8px;">
+<div class="loader"><div class="loader-ring"></div></div>
+</div>
+</div>
+</div>
+
+<!-- MAPS WINDOW -->
+<div class="mini-window" id="win-maps">
+<div class="win-header">
+<div class="win-title">Maps and Danger Zones</div>
+<button class="win-close" data-win="maps">x</button>
+</div>
+<div class="win-body">
+<div class="map-layer-btns">
+<div class="layer-btn" data-layer="earthquakes">Earthquakes</div>
+<div class="layer-btn" data-layer="floods">Floods</div>
+<div class="layer-btn" data-layer="storms">Storms</div>
+<div class="layer-btn" data-layer="conflicts">Conflicts</div>
+<div class="layer-btn active" data-layer="all">All Zones</div>
+</div>
+<div class="map-placeholder">
+<div class="map-grid-overlay"></div>
+<div class="map-pin">Location Pin</div>
+<div style="font-size:13px;font-weight:600;color:var(--teal-light);z-index:1;">Guwahati Region</div>
+<div style="font-size:11px;color:var(--text-muted);z-index:1;">26.1445 N, 91.7362 E</div>
+<div style="font-size:10px;color:var(--teal);z-index:1;margin-top:4px;">Auto-refresh in 60s</div>
+</div>
+<div style="font-size:11px;color:var(--text-muted);">Danger Level Legend</div>
+<div class="danger-legend">
+<div class="legend-item"><div class="legend-dot" style="background:var(--danger-low);"></div> Low</div>
+<div class="legend-item"><div class="legend-dot" style="background:var(--danger-med);"></div> Medium</div>
+<div class="legend-item"><div class="legend-dot" style="background:var(--danger-high);"></div> High</div>
+<div class="legend-item"><div class="legend-dot" style="background:var(--danger-crit);"></div> Critical</div>
+</div>
+<div id="danger-zones-list" style="display:flex;flex-direction:column;gap:6px;">
+<div class="card"><div style="display:flex;align-items:center;justify-content:space-between;"><span style="font-size:12px;">North Guwahati Area</span><span style="background:rgba(234,179,8,0.15);color:#eab308;padding:2px 8px;border-radius:var(--radius-full);font-size:10px;">Medium</span></div><div style="font-size:10px;color:var(--text-muted);margin-top:3px;">Flood risk zone - monsoon season</div></div>
+<div class="card"><div style="display:flex;align-items:center;justify-content:space-between;"><span style="font-size:12px;">Brahmaputra Floodplain</span><span style="background:rgba(249,115,22,0.15);color:#f97316;padding:2px 8px;border-radius:var(--radius-full);font-size:10px;">High</span></div><div style="font-size:10px;color:var(--text-muted);margin-top:3px;">Active flood monitoring</div></div>
+<div class="card"><div style="display:flex;align-items:center;justify-content:space-between;"><span style="font-size:12px;">Dispur Hills</span><span style="background:rgba(34,197,94,0.15);color:#22c55e;padding:2px 8px;border-radius:var(--radius-full);font-size:10px;">Low</span></div><div style="font-size:10px;color:var(--text-muted);margin-top:3px;">Landslide watch</div></div>
+</div>
+<div style="font-size:10px;color:var(--text-muted);text-align:center;">Map powered by Google Maps API. Add your API key in Settings.</div>
+</div>
+</div>
+
+<!-- CAMERA WINDOW -->
+<div class="mini-window" id="win-camera">
+<div class="win-header">
+<div class="win-title">AI Camera Vision</div>
+<button class="win-close" data-win="camera">x</button>
+</div>
+<div class="win-body">
+<div class="camera-view" id="camera-view">
+<div class="camera-scanline"></div>
+<div style="text-align:center;z-index:1;">
+<div style="font-size:32px;">Camera</div>
+<div style="font-size:12px;color:var(--text-muted);margin-top:4px;">Camera requires native app</div>
+<div style="font-size:11px;color:var(--teal-light);margin-top:8px;">AI Vision Model Ready</div>
+</div>
+</div>
+<div style="display:flex;gap:8px;justify-content:center;align-items:center;">
+<button class="btn btn-outline" id="cam-flip">Flip Camera</button>
+<button class="capture-btn" id="cam-capture" title="Capture"></button>
+<button class="btn btn-outline" id="cam-continuous" data-on="false">Auto Mode</button>
+</div>
+<div class="api-input-group">
+<div class="api-label">Vision AI Prompt (optional)</div>
+<input class="search-input" id="vision-prompt" placeholder="Describe what you see, identify objects...">
+</div>
+<div class="api-input-group">
+<div class="api-label">Vision AI Model</div>
+<select class="lang-select" id="vision-model">
+<option value="google/gemini-flash-1.5">Gemini Flash 1.5 (Recommended)</option>
+<option value="openai/gpt-4o">GPT-4o Vision</option>
+<option value="anthropic/claude-3-haiku">Claude 3 Haiku</option>
+</select>
+</div>
+<div id="camera-result" class="camera-result" style="display:none;"></div>
+</div>
+</div>
+
+<!-- FILE ANALYZER WINDOW -->
+<div class="mini-window" id="win-files">
+<div class="win-header">
+<div class="win-title">File Analyzer</div>
+<button class="win-close" data-win="files">x</button>
+</div>
+<div class="win-body">
+<input type="file" id="file-picker" accept=".txt,.pdf,.docx,.jpg,.jpeg,.png,.csv,.json" style="display:none;">
+<div class="file-drop" id="file-drop">
+<div class="file-drop-icon">Folder</div>
+<div style="font-size:13px;font-weight:600;color:var(--text-secondary);">Tap to select file</div>
+<div class="file-drop-text">TXT, PDF, DOCX, JPG, PNG, CSV, JSON</div>
+</div>
+<div id="file-selected" style="display:none;" class="card">
+<div style="display:flex;align-items:center;gap:8px;">
+<span style="font-size:20px;">File</span>
+<div>
+<div style="font-size:13px;font-weight:600;" id="file-name">No file</div>
+<div style="font-size:10px;color:var(--text-muted);" id="file-size">0 KB</div>
+</div>
+</div>
+</div>
+<div class="api-input-group">
+<div class="api-label">What do you want to know?</div>
+<textarea class="search-input" id="file-prompt" placeholder="Summarize this document, extract key points, find all emails..." rows="3" style="resize:none;"></textarea>
+</div>
+<button class="btn btn-teal" id="file-analyze-btn" style="width:100%;">Analyze with AI</button>
+<div id="file-result" style="display:none;" class="camera-result"></div>
+<div style="font-size:11px;color:var(--text-muted);">Recent Files</div>
+<div id="file-history" style="display:flex;flex-direction:column;gap:6px;"></div>
+</div>
+</div>
+
+<!-- NOTES WINDOW -->
+<div class="mini-window" id="win-notes">
+<div class="win-header">
+<div class="win-title">Notes</div>
+<button class="win-close" data-win="notes">x</button>
+</div>
+<div class="win-body">
+<div style="display:flex;gap:8px;">
+<button class="btn btn-teal" id="note-add-btn" style="flex:1;">+ New Note</button>
+<button class="btn btn-outline" id="note-cancel-btn" style="display:none;">Cancel</button>
+</div>
+<div id="note-editor" style="display:none;" class="note-editor">
+<input class="note-title-input" id="note-title-input" placeholder="Note title...">
+<textarea class="note-content-input" id="note-content-input" placeholder="Note content..." rows="4"></textarea>
+<button class="btn btn-teal" id="note-save-btn">Save Note</button>
+</div>
+<div id="notes-list" style="display:flex;flex-direction:column;gap:8px;"></div>
+</div>
+</div>
+
+<!-- TASKS WINDOW -->
+<div class="mini-window" id="win-tasks">
+<div class="win-header">
+<div class="win-title">Tasks</div>
+<button class="win-close" data-win="tasks">x</button>
+</div>
+<div class="win-body">
+<div class="task-add-row">
+<input class="search-input" id="task-input" placeholder="Add new task..." style="flex:1;">
+<button class="btn btn-teal" id="task-add-btn">Add</button>
+</div>
+<div class="task-filter-tabs">
+<div class="task-tab active" data-filter="all">All</div>
+<div class="task-tab" data-filter="active">Active</div>
+<div class="task-tab" data-filter="completed">Done</div>
+</div>
+<div id="task-counter" class="task-counter">0/0 completed</div>
+<div id="tasks-list" style="display:flex;flex-direction:column;gap:6px;"></div>
+</div>
+</div>
+
+<!-- GOOGLE SEARCH WINDOW -->
+<div class="mini-window" id="win-google">
+<div class="win-header">
+<div class="win-title">Google Search</div>
+<button class="win-close" data-win="google">x</button>
+</div>
+<div class="win-body">
+<div class="search-row">
+<input class="search-input" id="google-search-input" placeholder="Search Google..." style="flex:1;">
+<button class="btn btn-teal" id="google-search-btn">Search</button>
+</div>
+<div id="google-results" style="display:flex;flex-direction:column;gap:8px;"></div>
+</div>
+</div>
+
+<!-- CONTACTS WINDOW -->
+<div class="mini-window" id="win-contacts">
+<div class="win-header">
+<div class="win-title">Contacts</div>
+<button class="win-close" data-win="contacts">x</button>
+</div>
+<div class="win-body">
+<input class="search-input" id="contact-search" placeholder="Search contacts...">
+<div style="display:flex;gap:8px;">
+<button class="btn btn-outline" id="load-contacts-btn" style="flex:1;">Load Device Contacts</button>
+<button class="btn btn-teal" id="add-contact-btn">+ Add</button>
+</div>
+<div id="add-contact-form" style="display:none;" class="note-editor">
+<input class="note-title-input" id="contact-name-input" placeholder="Contact name...">
+<input class="note-title-input" id="contact-phone-input" placeholder="Phone number..." type="tel">
+<button class="btn btn-teal" id="save-contact-btn">Save Contact</button>
+</div>
+<div id="contacts-list" style="display:flex;flex-direction:column;gap:6px;"></div>
+</div>
+</div>
+
+<!-- EXTRA FEATURES WINDOW -->
+<div class="mini-window" id="win-extras">
+<div class="win-header">
+<div class="win-title">Extra Features</div>
+<button class="win-close" data-win="extras">x</button>
+</div>
+<div class="win-body">
+<div class="feature-grid" id="extras-grid">
+</div>
+</div>
+</div>
+
+<!-- VOICE MODAL -->
+<div class="voice-modal" id="voice-modal">
+<div class="voice-panel glass">
+<div class="voice-icon">Mic</div>
+<div class="voice-title">Listening...</div>
+<div class="waveform">
+<div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+<div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+<div class="wave-bar"></div><div class="wave-bar"></div>
+</div>
+<div class="voice-text" id="voice-text">Say something...</div>
+<button class="btn btn-outline" id="voice-stop-btn" style="width:100%;">Stop Listening</button>
+</div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="admin-panel">
+<div class="admin-header">
+<div class="admin-title">JARVIS ADMIN DASHBOARD</div>
+<button class="btn btn-outline" id="admin-close-btn">Close</button>
+</div>
+<div class="admin-grid">
+<div class="stat-card"><div class="stat-val" id="stat-messages">0</div><div class="stat-key">Total Messages</div></div>
+<div class="stat-card"><div class="stat-val" id="stat-sessions">1</div><div class="stat-key">Sessions</div></div>
+<div class="stat-card"><div class="stat-val" id="stat-notes">0</div><div class="stat-key">Notes Saved</div></div>
+<div class="stat-card"><div class="stat-val" id="stat-tasks">0</div><div class="stat-key">Tasks Created</div></div>
+</div>
+<div class="admin-section">
+<div class="admin-section-title">Recent Chat Activity</div>
+<table class="admin-table">
+<thead><tr><th>Time</th><th>Type</th><th>Content Preview</th><th>Model</th></tr></thead>
+<tbody id="admin-chat-table"><tr><td colspan="4" style="color:var(--text-muted);text-align:center;">No activity yet</td></tr></tbody>
+</table>
+</div>
+<div class="admin-section">
+<div class="admin-section-title">System Status</div>
+<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;">
+<div class="card"><div style="font-size:11px;color:var(--text-muted);">AI Model (Fast)</div><div style="font-size:12px;color:#22c55e;margin-top:2px;">openai/gpt-oss-20b:free</div></div>
+<div class="card"><div style="font-size:11px;color:var(--text-muted);">AI Model (Power)</div><div style="font-size:12px;color:var(--purple-light);margin-top:2px;">openai/gpt-oss-120b:free</div></div>
+<div class="card"><div style="font-size:11px;color:var(--text-muted);">Local Storage</div><div style="font-size:12px;color:#22c55e;margin-top:2px;">Active</div></div>
+<div class="card"><div style="font-size:11px;color:var(--text-muted);">Network</div><div style="font-size:12px;" id="admin-net-status">Checking...</div></div>
+</div>
+</div>
+<div class="admin-section">
+<div class="admin-section-title">API Keys Status</div>
+<div id="admin-api-status" style="display:flex;flex-direction:column;gap:6px;"></div>
+</div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- INSTALL PROMPT -->
+<div id="install-prompt">
+<div class="install-row">
+<div class="install-text">Add <strong>JARVIS</strong> to your home screen for the best experience.</div>
+<button class="btn btn-teal" id="install-btn">Install</button>
+</div>
+</div>
+
+<style>
+#msg-input{border:none;background:transparent;outline:none;color:var(--text-primary);font-size:14px;font-family:var(--font);resize:none;max-height:80px;min-height:20px;line-height:1.4;flex:1;width:100%;}
+</style>
+
+<script>
+  function logoutUser() {
+  storage.remove('jarvis_logged_in');
+  STATE.isLoggedIn = false;
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+}
+
+// ============================================================
+// JARVIS AI ASSISTANT - COMPLETE JAVASCRIPT
+// ============================================================
+
+const STATE = {
+  isLoggedIn: false,
+  messages: [],
+  notes: [],
+  tasks: [],
+  contacts: [],
+  fileHistory: [],
+  currentModel: 'fast',
+  modelOverride: 'auto',
+  openWindow: null,
+  isListening: false,
+  recognition: null,
+  ttsEnabled: true,
+  speakResponses: true,
+  continuousListen: false,
+  darkTheme: true,
+  showFeatures: false,
+  networkOnline: navigator.onLine,
+  weatherUnit: 'C',
+  weatherData: null,
+  currentTasks: [],
+  taskFilter: 'all',
+  newsCategory: 'general',
+  ytResults: [],
+  ytCurrentIndex: -1,
+  ytPlayer: null,
+  typingInterval: null,
+  deferredPrompt: null,
+  adminActivity: [],
+  voiceLanguage: 'en-US',
+  ttsEngine: 'browser',
+  elevenlabsKey: '',
+  elevenlabsVoiceId: '',
+  apiKeys: {},
+  clipboardWatcher: null,
+  lastClipboard: '',
+  wakeWordActive: false,
+};
+
+const ADMIN = { email: 'Sonu@gmail.com', password: 'Sonu@7243' };
+const FAST_MODEL = 'openai/gpt-oss-20b:free';
+const POWER_MODEL = 'openai/gpt-oss-120b:free';
+const POWER_KEYWORDS = ['analyze','explain','compare','code','math','deep','complex','detail','make','create','build','write','generate','translate'];
+const POWER_LENGTH = 150;
+
+const STORAGE_KEYS = {
+  messages: 'jarvis_messages',
+  notes: 'jarvis_notes',
+  tasks: 'jarvis_tasks',
+  contacts: 'jarvis_contacts',
+  fileHistory: 'jarvis_files',
+  settings: 'jarvis_settings',
+  apiKeys: 'jarvis_apikeys',
+};
+
+// ============================================================
+// STORAGE HELPERS
+// ============================================================
+const storage = {
+  get: (key, def = null) => { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : def; } catch { return def; } },
+  set: (key, val) => { try { localStorage.setItem(key, JSON.stringify(val)); } catch {} },
+  remove: (key) => { try { localStorage.removeItem(key); } catch {} },
+};
+
+// ============================================================
+// INIT
+// ============================================================
+function init() {
+  // Auto-login check
+  if (storage.get('jarvis_logged_in', false)) {
+    STATE.isLoggedIn = true;
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+  }
+  
+  loadSettings();
+  loadData();
+  setupClock();
+  setupNetwork();
+  setupEventListeners();
+  setupNotes();
+  setupTasks();
+  setupContacts();
+  setupExtras();
+  setupNews();
+  setupFileHistory();
+}
+
+function loadSettings() {
+  const s = storage.get(STORAGE_KEYS.settings, {});
+  STATE.speakResponses = s.speakResponses !== undefined ? s.speakResponses : true;
+  STATE.continuousListen = s.continuousListen || false;
+  STATE.darkTheme = s.darkTheme !== undefined ? s.darkTheme : true;
+  STATE.showFeatures = s.showFeatures || false;
+  STATE.voiceLanguage = s.voiceLanguage || 'en-US';
+  STATE.ttsEngine = s.ttsEngine || 'browser';
+  STATE.modelOverride = s.modelOverride || 'auto';
+  STATE.currentModel = STATE.modelOverride === 'auto' ? 'fast' : STATE.modelOverride;
+
+  const keys = storage.get(STORAGE_KEYS.apiKeys, {});
+  STATE.apiKeys = keys;
+  STATE.elevenlabsKey = keys.elevenlabs || '';
+  STATE.elevenlabsVoiceId = keys.voiceid || '';
+}
+
+function loadData() {
+  STATE.messages = storage.get(STORAGE_KEYS.messages, []);
+  STATE.notes = storage.get(STORAGE_KEYS.notes, getDefaultNotes());
+  STATE.tasks = storage.get(STORAGE_KEYS.tasks, getDefaultTasks());
+  STATE.contacts = storage.get(STORAGE_KEYS.contacts, getDefaultContacts());
+  STATE.fileHistory = storage.get(STORAGE_KEYS.fileHistory, []);
+}
+
+function saveSettings() {
+  storage.set(STORAGE_KEYS.settings, {
+    speakResponses: STATE.speakResponses,
+    continuousListen: STATE.continuousListen,
+    darkTheme: STATE.darkTheme,
+    showFeatures: STATE.showFeatures,
+    voiceLanguage: STATE.voiceLanguage,
+    ttsEngine: STATE.ttsEngine,
+    modelOverride: STATE.modelOverride,
+  });
+}
+
+// ============================================================
+// DEFAULT DATA
+// ============================================================
+function getDefaultNotes() {
+  return [
+    { id: 1, title: 'Welcome to JARVIS Notes', content: 'Your intelligent note-taking system. Tap to edit, swipe to delete.', date: new Date().toISOString() },
+    { id: 2, title: 'Voice Commands', content: 'Say "add note [text]" to add notes by voice. Say "show notes" to open this panel.', date: new Date().toISOString() },
+    { id: 3, title: 'AI Integration', content: 'JARVIS can analyze your notes, summarize them, and answer questions using AI.', date: new Date().toISOString() },
+    { id: 4, title: 'Quick Tips', content: '1. Hold mic to speak\n2. Use quick bar to open windows\n3. Long press messages to copy\n4. Pull to refresh news', date: new Date().toISOString() },
+    { id: 5, title: 'API Setup', content: 'Go to Settings (gear icon) to add your API keys for weather, news, WhatsApp and more.', date: new Date().toISOString() },
+    { id: 6, title: 'File Analyzer', content: 'Upload PDF, DOCX, images and ask questions. JARVIS will analyze and respond.', date: new Date().toISOString() },
+    { id: 7, title: 'Maps Feature', content: 'The maps window shows danger zones with color coding: green, yellow, orange, red.', date: new Date().toISOString() },
+    { id: 8, title: 'Weather', content: 'Auto-detects location via GPS. Toggle between Celsius and Fahrenheit. 5-day forecast included.', date: new Date().toISOString() },
+    { id: 9, title: 'YouTube Integration', content: 'Search and watch YouTube videos inline. Use voice: "play [song name]".', date: new Date().toISOString() },
+    { id: 10, title: 'Admin Dashboard', content: 'Login with admin credentials to access the full dashboard with usage stats.', date: new Date().toISOString() },
+  ];
+}
+
+function getDefaultTasks() {
+  return [
+    { id: 1, text: 'Set up OpenRouter API key', done: false, date: new Date().toISOString() },
+    { id: 2, text: 'Configure OpenWeatherMap API', done: false, date: new Date().toISOString() },
+    { id: 3, text: 'Add GNews API for latest news', done: false, date: new Date().toISOString() },
+    { id: 4, text: 'Test voice recognition feature', done: false, date: new Date().toISOString() },
+    { id: 5, text: 'Try YouTube video search', done: false, date: new Date().toISOString() },
+    { id: 6, text: 'Upload a file for AI analysis', done: false, date: new Date().toISOString() },
+    { id: 7, text: 'Enable ElevenLabs TTS for voice responses', done: false, date: new Date().toISOString() },
+    { id: 8, text: 'Check weather for your city', done: false, date: new Date().toISOString() },
+    { id: 9, text: 'View danger zones map', done: false, date: new Date().toISOString() },
+    { id: 10, text: 'Add JARVIS to home screen', done: false, date: new Date().toISOString() },
+  ];
+}
+
+function getDefaultContacts() {
+  return [
+    { id: 1, name: 'Sonu Admin', phone: '+919876543210', avatar: 'S' },
+    { id: 2, name: 'JARVIS System', phone: '+1000000000', avatar: 'J' },
+    { id: 3, name: 'Support Team', phone: '+910000000000', avatar: 'S' },
+  ];
+}
+
+// ============================================================
+// CLOCK
+// ============================================================
+function setupClock() {
+  updateClock();
+  setInterval(updateClock, 1000);
+}
+
+function updateClock() {
+  const now = new Date();
+  const options = { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+  const dateOptions = { timeZone: 'Asia/Kolkata', day: '2-digit', month: '2-digit', year: 'numeric' };
+  const timeStr = new Intl.DateTimeFormat('en-IN', options).format(now);
+  const dateStr = new Intl.DateTimeFormat('en-IN', dateOptions).format(now);
+  const el = document.getElementById('clock-time');
+  const del = document.getElementById('clock-date');
+  if (el) el.textContent = timeStr.toUpperCase();
+  if (del) del.textContent = dateStr;
+}
+
+function getTimeStr() {
+  const now = new Date();
+  const options = { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', hour12: true };
+  return new Intl.DateTimeFormat('en-IN', options).format(now).toUpperCase();
+}
+
+// ============================================================
+// NETWORK
+// ============================================================
+function setupNetwork() {
+  updateNetworkStatus();
+  window.addEventListener('online', updateNetworkStatus);
+  window.addEventListener('offline', updateNetworkStatus);
+}
+
+function updateNetworkStatus() {
+  STATE.networkOnline = navigator.onLine;
+  const badge = document.getElementById('net-badge');
+  const banner = document.getElementById('offline-banner');
+  if (badge) {
+    badge.textContent = STATE.networkOnline ? 'Online' : 'Offline';
+    badge.className = 'net-badge ' + (STATE.networkOnline ? 'net-online' : 'net-offline');
+  }
+  if (banner) banner.classList.toggle('show', !STATE.networkOnline);
+}
+
+// ============================================================
+// LOGIN
+// ============================================================
+function setupEventListeners() {
+  const loginBtn = document.getElementById('login-btn');
+  const fpBtn = document.getElementById('fp-btn');
+  const settingsBtn = document.getElementById('settings-btn');
+  const settingsClose = document.getElementById('settings-close');
+  const sendBtn = document.getElementById('send-btn');
+  const msgInput = document.getElementById('msg-input');
+  const micBtn = document.getElementById('mic-btn');
+  const overlay = document.getElementById('windows-overlay');
+  const saveApiBtn = document.getElementById('save-api-btn');
+  const clearChatBtn = document.getElementById('clear-chat-btn');
+  const adminPanelBtn = document.getElementById('admin-panel-btn');
+  const adminCloseBtn = document.getElementById('admin-close-btn');
+  const installBtn = document.getElementById('install-btn');
+
+  if (loginBtn) loginBtn.addEventListener('click', handleLogin);
+  if (fpBtn) fpBtn.addEventListener('click', handleFingerprint);
+  if (settingsBtn) settingsBtn.addEventListener('click', () => openSettings());
+  if (settingsClose) settingsClose.addEventListener('click', () => closeSettings());
+  if (sendBtn) sendBtn.addEventListener('click', handleSend);
+  if (msgInput) {
+    msgInput.addEventListener('input', () => {
+      sendBtn.disabled = !msgInput.value.trim();
+      autoGrowTextarea(msgInput);
+    });
+    msgInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (msgInput.value.trim()) handleSend(); }
+    });
+  }
+  if (micBtn) {
+    micBtn.addEventListener('click', toggleVoice);
+    micBtn.addEventListener('mousedown', (e) => e.preventDefault());
+  }
+  if (overlay) overlay.addEventListener('click', closeAllWindows);
+  if (saveApiBtn) saveApiBtn.addEventListener('click', saveApiKeys);
+  if (clearChatBtn) clearChatBtn.addEventListener('click', clearChat);
+  if (adminPanelBtn) adminPanelBtn.addEventListener('click', openAdminPanel);
+  if (adminCloseBtn) adminCloseBtn.addEventListener('click', closeAdminPanel);
+  if (installBtn) installBtn.addEventListener('click', installApp);
+
+  // Login enter key
+  document.getElementById('login-pass').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') handleLogin();
+  });
+
+  // Quick pills
+  document.querySelectorAll('.pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      const win = pill.dataset.win;
+      openWindow(win);
+    });
+  });
+
+  // Window close buttons
+  document.querySelectorAll('.win-close').forEach(btn => {
+    btn.addEventListener('click', () => closeAllWindows());
+  });
+
+  // Settings toggles
+  document.querySelectorAll('.toggle').forEach(t => {
+    t.addEventListener('click', () => {
+      const key = t.dataset.key;
+      const isOn = t.classList.contains('on');
+      if (key === 'speakResponses') STATE.speakResponses = !isOn;
+      if (key === 'continuousListen') STATE.continuousListen = !isOn;
+      if (key === 'darkTheme') STATE.darkTheme = !isOn;
+      if (key === 'showFeatures') {
+        STATE.showFeatures = !isOn;
+        document.getElementById('features-bar').style.display = STATE.showFeatures ? 'block' : 'none';
+      }
+      t.classList.toggle('on', !isOn);
+      saveSettings();
+    });
+  });
+
+  // Model selector
+  document.querySelectorAll('.model-option').forEach(opt => {
+    opt.addEventListener('click', () => {
+      document.querySelectorAll('.model-option').forEach(o => o.classList.remove('selected','fast','power'));
+      opt.classList.add('selected');
+      const m = opt.dataset.model;
+      if (m === 'fast') opt.classList.add('fast');
+      if (m === 'power') opt.classList.add('power');
+      STATE.modelOverride = m;
+      if (m !== 'auto') STATE.currentModel = m;
+      updateModelBadge();
+      saveSettings();
+    });
+  });
+
+  // Eye buttons
+  document.querySelectorAll('.eye-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const input = document.getElementById(btn.dataset.target);
+      if (input) {
+        input.type = input.type === 'password' ? 'text' : 'password';
+        btn.textContent = input.type === 'password' ? 'Show' : 'Hide';
+      }
+    });
+  });
+
+  // Voice lang & tts
+  const vl = document.getElementById('voice-lang');
+  if (vl) vl.addEventListener('change', () => { STATE.voiceLanguage = vl.value; saveSettings(); });
+  const te = document.getElementById('tts-engine');
+  if (te) te.addEventListener('change', () => { STATE.ttsEngine = te.value; saveSettings(); });
+
+  // Weather
+  document.getElementById('weather-search-btn').addEventListener('click', () => {
+    const city = document.getElementById('weather-city-input').value.trim();
+    if (city) fetchWeather(city);
+  });
+  document.getElementById('weather-gps-btn').addEventListener('click', fetchWeatherGPS);
+  document.getElementById('temp-c').addEventListener('click', () => { STATE.weatherUnit = 'C'; renderWeather(); document.getElementById('temp-c').classList.add('active'); document.getElementById('temp-f').classList.remove('active'); });
+  document.getElementById('temp-f').addEventListener('click', () => { STATE.weatherUnit = 'F'; renderWeather(); document.getElementById('temp-f').classList.add('active'); document.getElementById('temp-c').classList.remove('active'); });
+
+  // YouTube
+  document.getElementById('yt-search-btn').addEventListener('click', () => ytSearch());
+  document.getElementById('yt-search').addEventListener('keydown', (e) => { if (e.key === 'Enter') ytSearch(); });
+  document.getElementById('yt-playpause').addEventListener('click', ytPlayPause);
+  document.getElementById('yt-skipback').addEventListener('click', () => ytSkip(-10));
+  document.getElementById('yt-skipfwd').addEventListener('click', () => ytSkip(10));
+  document.getElementById('yt-prev').addEventListener('click', () => ytNavigate(-1));
+  document.getElementById('yt-next').addEventListener('click', () => ytNavigate(1));
+  document.getElementById('yt-mute').addEventListener('click', ytMute);
+  document.getElementById('yt-fullscreen').addEventListener('click', ytFullscreen);
+
+  // WhatsApp
+  document.getElementById('wa-send-btn').addEventListener('click', sendWhatsApp);
+
+  // News tabs
+  document.querySelectorAll('.news-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.news-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      STATE.newsCategory = tab.dataset.cat;
+      fetchNews(STATE.newsCategory);
+    });
+  });
+
+  // Map layers
+  document.querySelectorAll('.layer-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.layer-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+
+  // Camera
+  document.getElementById('cam-capture').addEventListener('click', handleCapture);
+  document.getElementById('cam-flip').addEventListener('click', () => showToast('Camera flip requires native app'));
+  document.getElementById('cam-continuous').addEventListener('click', (e) => {
+    const on = e.target.dataset.on === 'true';
+    e.target.dataset.on = !on;
+    e.target.textContent = !on ? 'Auto ON' : 'Auto Mode';
+    showToast(!on ? 'Continuous detection enabled' : 'Continuous detection disabled');
+  });
+
+  // File
+  document.getElementById('file-drop').addEventListener('click', () => document.getElementById('file-picker').click());
+  document.getElementById('file-picker').addEventListener('change', handleFileSelect);
+  document.getElementById('file-analyze-btn').addEventListener('click', analyzeFile);
+
+  // Notes
+  document.getElementById('note-add-btn').addEventListener('click', showNoteEditor);
+  document.getElementById('note-cancel-btn').addEventListener('click', hideNoteEditor);
+  document.getElementById('note-save-btn').addEventListener('click', saveNote);
+
+  // Tasks
+  document.getElementById('task-add-btn').addEventListener('click', addTask);
+  document.getElementById('task-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') addTask(); });
+  document.querySelectorAll('.task-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.task-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      STATE.taskFilter = tab.dataset.filter;
+      renderTasks();
+    });
+  });
+
+  // Google Search
+  document.getElementById('google-search-btn').addEventListener('click', () => googleSearch());
+  document.getElementById('google-search-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') googleSearch(); });
+
+  // Contacts
+  document.getElementById('load-contacts-btn').addEventListener('click', loadDeviceContacts);
+  document.getElementById('add-contact-btn').addEventListener('click', () => {
+    const form = document.getElementById('add-contact-form');
+    form.style.display = form.style.display === 'none' ? 'flex' : 'none';
+  });
+  document.getElementById('save-contact-btn').addEventListener('click', saveContact);
+  document.getElementById('contact-search').addEventListener('input', (e) => filterContacts(e.target.value));
+
+  // Voice modal
+  document.getElementById('voice-stop-btn').addEventListener('click', stopVoice);
+
+  // Settings state sync
+  syncSettingsUI();
+
+  // PWA Install
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    STATE.deferredPrompt = e;
+    document.getElementById('install-prompt').classList.add('show');
+  });
+
+  // Chat long press
+  document.getElementById('chat-area').addEventListener('contextmenu', handleContextMenu);
+
+  // Clipboard watcher
+  startClipboardWatcher();
+}
+
+function syncSettingsUI() {
+  const s = storage.get(STORAGE_KEYS.settings, {});
+  const apiKeys = storage.get(STORAGE_KEYS.apiKeys, {});
+
+  if (apiKeys.openrouter) document.getElementById('api-openrouter').value = apiKeys.openrouter;
+  if (apiKeys.weather) document.getElementById('api-weather').value = apiKeys.weather;
+  if (apiKeys.gnews) document.getElementById('api-gnews').value = apiKeys.gnews;
+  if (apiKeys.whatsapp) document.getElementById('api-whatsapp').value = apiKeys.whatsapp;
+  if (apiKeys.elevenlabs) document.getElementById('api-elevenlabs').value = apiKeys.elevenlabs;
+  if (apiKeys.voiceid) document.getElementById('api-voiceid').value = apiKeys.voiceid;
+  if (apiKeys.google) document.getElementById('api-google').value = apiKeys.google;
+  if (apiKeys.maps) document.getElementById('api-maps').value = apiKeys.maps;
+  if (apiKeys.gemini) document.getElementById('api-gemini').value = apiKeys.gemini;
+
+  const tgl = (id, val) => {
+    const el = document.getElementById(id);
+    if (el) { el.classList.toggle('on', !!val); }
+  };
+  tgl('toggle-speak', STATE.speakResponses);
+  tgl('toggle-listen', STATE.continuousListen);
+  tgl('toggle-theme', STATE.darkTheme);
+  tgl('toggle-features', STATE.showFeatures);
+
+  const vl = document.getElementById('voice-lang');
+  if (vl) vl.value = STATE.voiceLanguage;
+  const te = document.getElementById('tts-engine');
+  if (te) te.value = STATE.ttsEngine;
+
+  document.getElementById('features-bar').style.display = STATE.showFeatures ? 'block' : 'none';
+}
+
+// ============================================================
+// AUTH
+// ============================================================
+function handleLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const pass = document.getElementById('login-pass').value;
+  const errEl = document.getElementById('login-error');
+
+  if (email === ADMIN.email && pass === ADMIN.password) {
+    errEl.style.display = 'none';
+    completeLogin();
+  } else {
+    errEl.style.display = 'block';
+    errEl.textContent = 'Invalid credentials. Please check your email and password.';
+  }
+}
+
+function handleFingerprint() {
+  if (window.PublicKeyCredential) {
+    navigator.credentials.get({
+      publicKey: {
+        challenge: new Uint8Array(32),
+        timeout: 60000,
+        userVerification: 'required',
+      }
+    }).then(() => {
+      completeLogin();
+    }).catch(() => {
+      showToast('Biometric authentication failed. Use email login.');
+    });
+  } else {
+    showToast('Biometric not supported. Use email/password.');
+  }
+}
+
+function completeLogin() {
+  storage.set('jarvis_logged_in', true);
+  STATE.isLoggedIn = true;
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+  renderChat();
+  renderTasks();
+  renderNotes();
+  renderContacts();
+  updateModelBadge();
+  
+  // Voice greeting
+  if ('speechSynthesis' in window) {
+    var greeting = new SpeechSynthesisUtterance('Password granted. I am JARVIS, the most powerful AI assistant. All systems online.');
+    greeting.lang = 'en-US';
+    greeting.rate = 0.9;
+    window.speechSynthesis.speak(greeting);
+  }
+  
+  if (STATE.messages.length === 0) {
+    addAIMessage('Hello! I am JARVIS, your AI assistant. I am ready to help you. You can ask me anything, use voice commands, or tap the quick buttons above to access features like YouTube, Weather, News, Maps, and more. Say "help" to see all available commands.');
+  }
+  fetchWeatherGPS();
+  fetchNews('general');
+  setTimeout(function() { refreshDangerZones(); }, 2000);
+}
+
+// ============================================================
+// SETTINGS
+// ============================================================
+function openSettings() {
+  document.getElementById('settings-panel').classList.add('open');
+}
+
+function closeSettings() {
+  document.getElementById('settings-panel').classList.remove('open');
+}
+
+function saveApiKeys() {
+  const keys = {
+    openrouter: document.getElementById('api-openrouter').value.trim(),
+    youtube: document.getElementById('api-youtube').value.trim(),
+    weather: document.getElementById('api-weather').value.trim(),
+    gnews: document.getElementById('api-gnews').value.trim(),
+    whatsapp: document.getElementById('api-whatsapp').value.trim(),
+    elevenlabs: document.getElementById('api-elevenlabs').value.trim(),
+    voiceid: document.getElementById('api-voiceid').value.trim(),
+    google: document.getElementById('api-google').value.trim(),
+    maps: document.getElementById('api-maps').value.trim(),
+    gemini: document.getElementById('api-gemini').value.trim(),
+  };
+  storage.set(STORAGE_KEYS.apiKeys, keys);
+  STATE.apiKeys = keys;
+  STATE.elevenlabsKey = keys.elevenlabs;
+  STATE.elevenlabsVoiceId = keys.voiceid;
+  showToast('API keys saved successfully');
+}
+
+function clearChat() {
+  STATE.messages = [];
+  storage.set(STORAGE_KEYS.messages, []);
+  renderChat();
+  showToast('Chat history cleared');
+  addAIMessage('Chat cleared. How can I help you?');
+}
+
+// ============================================================
+// WINDOWS
+// ============================================================
+function openWindow(name) {
+  closeAllWindows(true);
+  const win = document.getElementById('win-' + name);
+  if (!win) return;
+  STATE.openWindow = name;
+  win.classList.add('show');
+  document.getElementById('windows-overlay').classList.add('show');
+  document.querySelectorAll('.pill').forEach(p => p.classList.toggle('active', p.dataset.win === name));
+
+  if (name === 'news') fetchNews(STATE.newsCategory);
+  if (name === 'notes') renderNotes();
+  if (name === 'tasks') renderTasks();
+  if (name === 'contacts') renderContacts();
+  if (name === 'files') renderFileHistory();
+  if (name === 'extras') renderExtras();
+  if (name === 'maps') refreshDangerZones();
+}
+
+function closeAllWindows(silent = false) {
+  document.querySelectorAll('.mini-window').forEach(w => w.classList.remove('show'));
+  document.getElementById('windows-overlay').classList.remove('show');
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+  STATE.openWindow = null;
+}
+
+// ============================================================
+// CHAT & AI
+// ============================================================
+function selectModel(text) {
+  if (STATE.modelOverride !== 'auto') return STATE.modelOverride === 'power' ? POWER_MODEL : FAST_MODEL;
+  const low = text.toLowerCase();
+  const hasKeyword = POWER_KEYWORDS.some(k => low.includes(k));
+  const isLong = text.length > POWER_LENGTH;
+  return (hasKeyword || isLong) ? POWER_MODEL : FAST_MODEL;
+}
+
+function updateModelBadge() {
+  const badge = document.getElementById('model-badge');
+  if (!badge) return;
+  if (STATE.currentModel === 'power') {
+    badge.textContent = 'POWER';
+    badge.className = 'model-badge badge-power';
+  } else {
+    badge.textContent = 'FAST';
+    badge.className = 'model-badge badge-fast';
+  }
+}
+
+async function handleSend() {
+  const input = document.getElementById('msg-input');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  input.style.height = 'auto';
+  document.getElementById('send-btn').disabled = true;
+
+  // Check for commands first
+  const handled = await handleCommand(text);
+  if (handled) return;
+
+  addUserMessage(text);
+
+  const model = selectModel(text);
+  STATE.currentModel = model === POWER_MODEL ? 'power' : 'fast';
+  updateModelBadge();
+
+  await streamAIResponse(text, model);
+}
+
+function addUserMessage(text) {
+  const msg = { id: Date.now(), role: 'user', content: text, time: getTimeStr() };
+  STATE.messages.push(msg);
+  if (STATE.messages.length > 50) STATE.messages = STATE.messages.slice(-50);
+  storage.set(STORAGE_KEYS.messages, STATE.messages);
+  renderChat();
+  logAdminActivity('user', text);
+  updateAdminStats();
+}
+
+function addAIMessage(text, isStreaming = false) {
+  const msg = { id: Date.now(), role: 'ai', content: text, time: getTimeStr() };
+  STATE.messages.push(msg);
+  if (STATE.messages.length > 50) STATE.messages = STATE.messages.slice(-50);
+  storage.set(STORAGE_KEYS.messages, STATE.messages);
+  renderChat();
+  logAdminActivity('ai', text.substring(0, 80));
+  updateAdminStats();
+  if (!isStreaming && STATE.speakResponses) speakText(text);
+}
+
+function renderChat() {
+  const area = document.getElementById('chat-area');
+  if (!area) return;
+  area.innerHTML = '';
+  STATE.messages.forEach(msg => {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'msg-wrapper ' + msg.role;
+    wrapper.dataset.id = msg.id;
+
+    const bubble = document.createElement('div');
+    bubble.className = 'msg-bubble ' + msg.role;
+    bubble.textContent = msg.content;
+    if (msg.streaming) {
+      const cursor = document.createElement('span');
+      cursor.className = 'cursor-blink';
+      bubble.appendChild(cursor);
+    }
+
+    const time = document.createElement('div');
+    time.className = 'msg-time';
+    time.textContent = msg.time || '';
+
+    const actions = document.createElement('div');
+    actions.className = 'msg-actions';
+    const copyBtn = document.createElement('button');
+    copyBtn.className = 'msg-action-btn';
+    copyBtn.textContent = 'Copy';
+    copyBtn.addEventListener('click', () => { navigator.clipboard.writeText(msg.content).then(() => showToast('Copied')); });
+    const shareBtn = document.createElement('button');
+    shareBtn.className = 'msg-action-btn';
+    shareBtn.textContent = 'Share';
+    shareBtn.addEventListener('click', () => shareMessage(msg.content));
+    actions.appendChild(copyBtn);
+    actions.appendChild(shareBtn);
+
+    wrapper.appendChild(bubble);
+    wrapper.appendChild(time);
+    wrapper.appendChild(actions);
+    area.appendChild(wrapper);
+  });
+  area.scrollTop = area.scrollHeight;
+}
+
+function showTyping() {
+  const area = document.getElementById('chat-area');
+  if (!area) return;
+  const existing = document.getElementById('typing-indicator-msg');
+  if (existing) existing.remove();
+  const wrapper = document.createElement('div');
+  wrapper.className = 'msg-wrapper ai';
+  wrapper.id = 'typing-indicator-msg';
+  const indicator = document.createElement('div');
+  indicator.className = 'typing-indicator';
+  [1,2,3].forEach(() => {
+    const dot = document.createElement('div');
+    dot.className = 'typing-dot';
+    indicator.appendChild(dot);
+  });
+  wrapper.appendChild(indicator);
+  area.appendChild(wrapper);
+  area.scrollTop = area.scrollHeight;
+}
+
+function hideTyping() {
+  const el = document.getElementById('typing-indicator-msg');
+  if (el) el.remove();
+}
+
+async function streamAIResponse(userText, model) {
+  const apiKey = STATE.apiKeys.openrouter;
+
+  showTyping();
+
+  if (!apiKey) {
+    hideTyping();
+    const fallback = generateFallback(userText);
+    addAIMessage(fallback);
+    return;
+  }
+
+  const history = STATE.messages.slice(-10).map(m => ({
+    role: m.role === 'ai' ? 'assistant' : 'user',
+    content: m.content,
+  }));
+
+  const body = {
+    model: model,
+    messages: [
+      { role: 'system', content: 'You are JARVIS, an advanced AI assistant. Respond concisely and helpfully. Never use emoji in responses. Use plain text only. Be professional and intelligent.' },
+      ...history,
+    ],
+    stream: true,
+  };
+
+  try {
+    const resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + apiKey,
+        'Content-Type': 'application/json',
+        'HTTP-Referer': window.location.href,
+        'X-Title': 'JARVIS AI',
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (!resp.ok) throw new Error('API Error: ' + resp.status);
+
+    hideTyping();
+
+    const streamMsg = { id: Date.now(), role: 'ai', content: '', time: getTimeStr(), streaming: true };
+    STATE.messages.push(streamMsg);
+    renderChat();
+
+    const reader = resp.body.getReader();
+    const decoder = new TextDecoder();
+    let fullText = '';
+
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      const chunk = decoder.decode(value);
+      const lines = chunk.split('\n');
+      for (const line of lines) {
+        if (line.startsWith('data: ')) {
+          const data = line.slice(6);
+          if (data === '[DONE]') break;
+          try {
+            const json = JSON.parse(data);
+            const delta = json.choices?.[0]?.delta?.content || '';
+            fullText += delta;
+            const idx = STATE.messages.findIndex(m => m.id === streamMsg.id);
+            if (idx !== -1) {
+              STATE.messages[idx].content = fullText;
+              updateStreamBubble(streamMsg.id, fullText);
+            }
+          } catch {}
+        }
+      }
+    }
+
+    const idx = STATE.messages.findIndex(m => m.id === streamMsg.id);
+    if (idx !== -1) {
+      STATE.messages[idx].streaming = false;
+      STATE.messages[idx].content = fullText;
+    }
+    storage.set(STORAGE_KEYS.messages, STATE.messages);
+    renderChat();
+    if (STATE.speakResponses) speakText(fullText);
+    logAdminActivity('ai', fullText.substring(0, 80));
+    updateAdminStats();
+  } catch (e) {
+    hideTyping();
+    addAIMessage('Warning: AI service temporarily unavailable. Please check your API key in settings, or try again. Error: ' + e.message);
+  }
+}
+
+function updateStreamBubble(id, text) {
+  const area = document.getElementById('chat-area');
+  if (!area) return;
+  const wrappers = area.querySelectorAll('.msg-wrapper.ai');
+  const last = wrappers[wrappers.length - 1];
+  if (last) {
+    const bubble = last.querySelector('.msg-bubble');
+    if (bubble) {
+      bubble.textContent = text;
+      const cursor = document.createElement('span');
+      cursor.className = 'cursor-blink';
+      bubble.appendChild(cursor);
+    }
+  }
+  area.scrollTop = area.scrollHeight;
+}
+
+function generateFallback(text) {
+  const responses = [
+    'No API key configured. Please add your OpenRouter API key in Settings to enable AI responses. I can still help with app features like weather, news, YouTube, notes, tasks, maps, file analysis, and more.',
+    'To enable AI responses, open Settings (gear icon) and add your OpenRouter API key. Meanwhile, I can help you with built-in features. Try asking about weather, news, or use the quick buttons above.',
+    'AI responses require an OpenRouter API key. Please configure it in Settings. I am still fully functional for all other features including voice commands, weather, YouTube, WhatsApp, notes, and tasks.',
+  ];
+  return responses[Math.floor(Math.random() * responses.length)];
+}
+
+function handleContextMenu(e) {
+  const bubble = e.target.closest('.msg-bubble');
+  if (bubble) {
+    e.preventDefault();
+    const text = bubble.textContent;
+    navigator.clipboard.writeText(text).then(() => showToast('Message copied to clipboard'));
+  }
+}
+
+function shareMessage(text) {
+  if (navigator.share) {
+    navigator.share({ text, title: 'JARVIS AI Response' });
+  } else {
+    navigator.clipboard.writeText(text).then(() => showToast('Copied to clipboard'));
+  }
+}
+
+// ============================================================
+// COMMANDS
+// ============================================================
+async function handleCommand(text) {
+  const lower = text.toLowerCase().trim();
+
+  if (lower === 'help' || lower === 'commands') {
+    showCommands();
+    return true;
+  }
+  if (lower === 'settings') { openSettings(); addAIMessage('Settings panel opened.'); return true; }
+  if (lower === 'show notes') { openWindow('notes'); addAIMessage('Notes opened.'); return true; }
+  if (lower === 'show tasks') { openWindow('tasks'); addAIMessage('Tasks opened.'); return true; }
+  if (lower === 'news' || lower === 'latest news') { openWindow('news'); addAIMessage('News opened. Fetching latest articles.'); return true; }
+  if (lower === 'map' || lower === 'danger zones' || lower === 'show map') { openWindow('maps'); addAIMessage('Maps opened. Showing danger zones.'); return true; }
+  if (lower === 'open camera' || lower === 'scan this') { openWindow('camera'); addAIMessage('Camera opened.'); return true; }
+  if (lower === 'analyze file' || lower === 'read file') { openWindow('files'); addAIMessage('File analyzer opened.'); return true; }
+  if (lower === 'weather') { openWindow('weather'); fetchWeatherGPS(); addAIMessage('Weather window opened. Fetching your location weather.'); return true; }
+
+  if (lower.startsWith('weather in ') || lower.startsWith('mausam ')) {
+    const city = lower.replace('weather in ', '').replace('mausam ', '');
+    openWindow('weather');
+    fetchWeather(city);
+    addAIMessage('Fetching weather for ' + city);
+    return true;
+  }
+
+  if (lower.startsWith('play ') || lower.startsWith('gana bajao ')) {
+    const query = lower.replace('play ', '').replace('gana bajao ', '');
+    openWindow('youtube');
+    document.getElementById('yt-search').value = query;
+    ytSearch(query);
+    addAIMessage('Opening YouTube and searching for: ' + query);
+    return true;
+  }
+
+  if (lower.startsWith('add note ')) {
+    const content = text.slice(9);
+    const note = { id: Date.now(), title: 'Quick Note', content, date: new Date().toISOString() };
+    STATE.notes.unshift(note);
+    storage.set(STORAGE_KEYS.notes, STATE.notes);
+    addAIMessage('Note added: ' + content);
+    return true;
+  }
+
+  if (lower.startsWith('add task ')) {
+    const taskText = text.slice(9);
+    const task = { id: Date.now(), text: taskText, done: false, date: new Date().toISOString() };
+    STATE.tasks.unshift(task);
+    storage.set(STORAGE_KEYS.tasks, STATE.tasks);
+    addAIMessage('Task added: ' + taskText);
+    return true;
+  }
+
+  if (lower.startsWith('search google for ') || lower.startsWith('google ')) {
+    const query = lower.replace('search google for ', '').replace('google ', '');
+    openWindow('google');
+    document.getElementById('google-search-input').value = query;
+    googleSearch(query);
+    addAIMessage('Searching Google for: ' + query);
+    return true;
+  }
+
+  if (lower.startsWith('whatsapp ') || lower.startsWith('message ')) {
+    openWindow('whatsapp');
+    addAIMessage('WhatsApp window opened. Please enter the contact and message.');
+    return true;
+  }
+
+  return false;
+}
+
+function showCommands() {
+  addUserMessage('help');
+  const cmds = [
+    ['play [song]', 'Open YouTube and search'],
+    ['whatsapp [contact] [msg]', 'Send WhatsApp message'],
+    ['weather in [city]', 'Get weather for city'],
+    ['weather', 'Get GPS weather'],
+    ['open camera', 'Open AI camera'],
+    ['show notes', 'Open Notes'],
+    ['add note [text]', 'Add note directly'],
+    ['add task [task]', 'Add task directly'],
+    ['show tasks', 'Open Tasks'],
+    ['news', 'Open News'],
+    ['map / danger zones', 'Open Maps'],
+    ['search google for [query]', 'Google Search'],
+    ['analyze file', 'Open File Analyzer'],
+    ['settings', 'Open Settings panel'],
+    ['help / commands', 'Show this list'],
+  ];
+  const text = 'Available commands:\n' + cmds.map(c => c[0] + ' - ' + c[1]).join('\n');
+  addAIMessage(text);
+}
+
+// ============================================================
+// VOICE
+// ============================================================
+function toggleVoice() {
+  if (STATE.isListening) stopVoice();
+  else startVoice();
+}
+
+function startVoice() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    showToast('Speech recognition not supported in this browser');
+    return;
+  }
+
+  STATE.recognition = new SpeechRecognition();
+  STATE.recognition.lang = STATE.voiceLanguage;
+  STATE.recognition.continuous = STATE.continuousListen;
+  STATE.recognition.interimResults = true;
+
+  STATE.recognition.onstart = () => {
+    STATE.isListening = true;
+    document.getElementById('mic-btn').classList.add('listening');
+    document.getElementById('voice-modal').classList.add('show');
+  };
+
+  STATE.recognition.onresult = (e) => {
+    const transcript = Array.from(e.results).map(r => r[0].transcript).join('');
+    document.getElementById('voice-text').textContent = transcript;
+    document.getElementById('msg-input').value = transcript;
+    document.getElementById('send-btn').disabled = !transcript.trim();
+  };
+
+  STATE.recognition.onend = () => {
+    STATE.isListening = false;
+    document.getElementById('mic-btn').classList.remove('listening');
+    document.getElementById('voice-modal').classList.remove('show');
+    const text = document.getElementById('msg-input').value.trim();
+    if (text) handleSend();
+  };
+
+  STATE.recognition.onerror = (e) => {
+    stopVoice();
+    showToast('Voice error: ' + e.error);
+  };
+
+  STATE.recognition.start();
+}
+
+function stopVoice() {
+  if (STATE.recognition) {
+    STATE.recognition.stop();
+    STATE.recognition = null;
+  }
+  STATE.isListening = false;
+  document.getElementById('mic-btn').classList.remove('listening');
+  document.getElementById('voice-modal').classList.remove('show');
+}
+
+function speakText(text) {
+  if (!STATE.speakResponses) return;
+  const clean = text.replace(/[^\w\s.,!?;:'-]/g, '').replace(/\s+/g, ' ').trim();
+  if (!clean) return;
+
+  if (STATE.ttsEngine === 'elevenlabs' && STATE.elevenlabsKey && STATE.elevenlabsVoiceId) {
+    speakElevenLabs(clean);
+    return;
+  }
+
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(clean.substring(0, 500));
+    utterance.lang = STATE.voiceLanguage;
+    utterance.rate = 1.05;
+    utterance.pitch = 1;
+    window.speechSynthesis.speak(utterance);
+  }
+}
+
+async function speakElevenLabs(text) {
+  try {
+    const resp = await fetch('https://api.elevenlabs.io/v1/text-to-speech/' + STATE.elevenlabsVoiceId, {
+      method: 'POST',
+      headers: { 'xi-api-key': STATE.elevenlabsKey, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: text.substring(0, 500), model_id: 'eleven_monolingual_v1' }),
+    });
+    if (!resp.ok) throw new Error();
+    const blob = await resp.blob();
+    const url = URL.createObjectURL(blob);
+    const audio = new Audio(url);
+    audio.play();
+  } catch {8
+    speakText(text);
+  }
+}
+
+async function ytSearch(query) {
+  query = query || document.getElementById('yt-search').value.trim();
+  if (!query) return;
+  var c = document.getElementById('yt-results');
+  c.innerHTML = '<div style="text-align:center;padding:10px;color:#64748b;">Searching...</div>';
+  
+  var apiKey = STATE.apiKeys.youtube || (storage.get(STORAGE_KEYS.apiKeys, {}) || {}).youtube || STATE.apiKeys.google;
+  
+  if (!apiKey) {
+    var fake = [
+      { title: query + ' - Video 1', channel: 'YouTube', id: 'dQw4w9WgXcQ' },
+      { title: query + ' - Video 2', channel: 'YouTube', id: 'dQw4w9WgXcQ' },
+      { title: query + ' - Video 3', channel: 'YouTube', id: 'dQw4w9WgXcQ' }
+    ];
+    STATE.ytResults = fake;
+    renderYTResults(fake, false);
+    return;
+  }
+  
+  try {
+    var resp = await fetch('https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=8&q=' + encodeURIComponent(query) + '&type=video&key=' + apiKey);
+    var data = await resp.json();
+    if (data.items && data.items.length > 0) {
+      var results = [];
+      for (var i = 0; i < data.items.length; i++) {
+        results.push({
+          title: data.items[i].snippet.title,
+          channel: data.items[i].snippet.channelTitle,
+          id: data.items[i].id.videoId,
+          thumb: (data.items[i].snippet.thumbnails || {}).medium ? data.items[i].snippet.thumbnails.medium.url : ''
+        });
+      }
+      STATE.ytResults = results;
+      renderYTResults(results, false);
+    }
+  } catch(e) {
+    c.innerHTML = '<div style="text-align:center;color:#64748b;padding:10px;">Search failed</div>';
+  }
+}
+
+// ===========================
+// 🎀 AESTHETIC YOUTUBE PLAYER 🎀
+// ===========================
+
+function loadYTVideo(videoId, index) {
+  STATE.ytCurrentIndex = index;
+  const container = document.getElementById('yt-player-container');
+  
+  var prevBtn = index > 0 ? '<button onclick="ytNavigate(-1)" style="position:absolute;left:6px;top:50%;transform:translateY(-50%);width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,0.7);border:1px solid rgba(255,255,255,0.3);color:#fff;font-size:12px;cursor:pointer;z-index:10;">◀</button>' : '';
+  
+  var nextBtn = index < STATE.ytResults.length - 1 ? '<button onclick="ytNavigate(1)" style="position:absolute;right:6px;top:50%;transform:translateY(-50%);width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,0.7);border:1px solid rgba(255,255,255,0.3);color:#fff;font-size:12px;cursor:pointer;z-index:10;">▶</button>' : '';
+  
+  container.innerHTML = `
+    <div style="position:relative;border-radius:14px;overflow:hidden;border:1.5px solid rgba(236,72,153,0.35);background:#000;box-shadow:0 0 20px rgba(236,72,153,0.1);margin-bottom:8px;">
+      <iframe width="100%" height="195" 
+        src="https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&controls=1&modestbranding=1"
+        frameborder="0" 
+        allow="autoplay;encrypted-media;picture-in-picture;fullscreen" 
+        allowfullscreen 
+        style="display:block;">
+      </iframe>
+      ${prevBtn}
+      ${nextBtn}
+      <div style="position:absolute;bottom:4px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.6);color:#fff;font-size:8px;padding:2px 8px;border-radius:8px;">${index + 1}/${STATE.ytResults.length}</div>
+    </div>
+  `;
+}
+
+function renderYTResults(results) {
+  const container = document.getElementById('yt-results');
+  container.innerHTML = '';
+  
+  if (results.length > 0) {
+    loadYTVideo(results[0].id, 0);
+  }
+  
+  results.forEach((r, i) => {
+    const card = document.createElement('div');
+    card.style.cssText = `
+      display:flex;gap:8px;padding:8px 6px;cursor:pointer;
+      border-bottom:1px solid rgba(236,72,153,0.08);
+      transition:all 0.2s;align-items:center;
+    `;
+    card.onmouseenter = () => card.style.background = 'rgba(236,72,153,0.05)';
+    card.onmouseleave = () => card.style.background = 'transparent';
+    
+    card.innerHTML = `
+      <div style="width:50px;height:32px;border-radius:4px;overflow:hidden;flex-shrink:0;background:#1f2937;">
+        ${r.thumb ? '<img src="' + r.thumb + '" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.style.background=\'#374151\'">' : ''}
+      </div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:11px;color:#f1f5f9;line-height:1.3;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">${r.title}</div>
+        <div style="font-size:9px;color:#a78bfa;margin-top:1px;">${r.channel || 'YouTube'}</div>
+      </div>
+    `;
+    
+    card.onclick = () => {
+      loadYTVideo(r.id, i);
+      document.querySelectorAll('#yt-results > div').forEach(c => c.style.background = 'transparent');
+      card.style.background = 'rgba(236,72,153,0.1)';
+    };
+    
+    container.appendChild(card);
+  });
+}
+
+function ytNavigate(dir) {
+  const next = STATE.ytCurrentIndex + dir;
+  if (next >= 0 && next < STATE.ytResults.length) {
+    loadYTVideo(STATE.ytResults[next].id, next);
+  }
+}
+
+async function playSong(query) {
+  openWindow('youtube');
+  document.getElementById('yt-search').value = query;
+  await ytSearch(query);
+}
+
+// ============================================================
+// WHATSAPP
+// ============================================================
+async function sendWhatsApp() {
+  const apiKey = document.getElementById('wa-api-key').value.trim() || STATE.apiKeys.whatsapp;
+  const country = document.getElementById('wa-country').value.trim();
+  const phone = document.getElementById('wa-phone').value.trim();
+  const message = document.getElementById('wa-message').value.trim();
+
+  if (!phone || !message) { showToast('Please enter phone and message'); return; }
+
+  const spinner = document.getElementById('wa-spinner');
+  const statusEl = document.getElementById('wa-status');
+  spinner.style.display = 'flex';
+  statusEl.innerHTML = '';
+
+  if (!apiKey) {
+    setTimeout(() => {
+      spinner.style.display = 'none';
+      statusEl.innerHTML = '<div class="wa-status pending">No API key configured. Add PickyAssist key in Settings.</div>';
+    }, 1000);
+    return;
+  }
+
+  try {
+    const resp = await fetch('https://app.pickyassist.com/app/api/v1/message/send', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + apiKey },
+      body: JSON.stringify({ phone: country + phone, message }),
+    });
+    spinner.style.display = 'none';
+    if (resp.ok) {
+      statusEl.innerHTML = '<div class="wa-status sent">Message sent successfully</div>';
+    } else {
+      statusEl.innerHTML = '<div class="wa-status pending">Warning: Send failed. Check API key.</div>';
+    }
+  } catch {
+    spinner.style.display = 'none';
+    statusEl.innerHTML = '<div class="wa-status pending">Warning: WhatsApp service unavailable</div>';
+  }
+}
+
+// ============================================================
+// WEATHER
+// ============================================================
+async function fetchWeather(city) {
+  const apiKey = STATE.apiKeys.weather;
+  if (!apiKey) {
+    showFallbackWeather(city);
+    return;
+  }
+  try {
+    const resp = await fetch('https://api.openweathermap.org/data/2.5/weather?q=' + encodeURIComponent(city) + '&appid=' + apiKey + '&units=metric');
+    if (!resp.ok) throw new Error();
+    const data = await resp.json();
+    STATE.weatherData = data;
+    renderWeather();
+    fetchForecast(city, apiKey);
+  } catch {
+    showFallbackWeather(city);
+  }
+}
+
+async function fetchWeatherGPS() {
+  if (!navigator.geolocation) { fetchWeather('Guwahati'); return; }
+  navigator.geolocation.getCurrentPosition(
+    async (pos) => {
+      const { latitude, longitude } = pos.coords;
+      const apiKey = STATE.apiKeys.weather;
+      if (!apiKey) { showFallbackWeather('Your Location'); return; }
+      try {
+        const resp = await fetch('https://api.openweathermap.org/data/2.5/weather?lat=' + latitude + '&lon=' + longitude + '&appid=' + apiKey + '&units=metric');
+        if (!resp.ok) throw new Error();
+        const data = await resp.json();
+        STATE.weatherData = data;
+        renderWeather();
+        fetchForecast(data.name, apiKey);
+      } catch {
+        showFallbackWeather('Your Location');
+      }
+    },
+    () => fetchWeather('Guwahati')
+  );
+}
+
+async function fetchForecast(city, apiKey) {
+  try {
+    const resp = await fetch('https://api.openweathermap.org/data/2.5/forecast?q=' + encodeURIComponent(city) + '&appid=' + apiKey + '&units=metric&cnt=40');
+    if (!resp.ok) return;
+    const data = await resp.json();
+    renderForecast(data.list);
+  } catch {}
+}
+
+function renderWeather() {
+  const d = STATE.weatherData;
+  if (!d) return;
+  const temp = STATE.weatherUnit === 'C' ? Math.round(d.main.temp) + 'C' : Math.round(d.main.temp * 9 / 5 + 32) + 'F';
+  const feels = STATE.weatherUnit === 'C' ? Math.round(d.main.feels_like) + 'C' : Math.round(d.main.feels_like * 9 / 5 + 32) + 'F';
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+  document.getElementById('w-city').textContent = d.name + ', ' + d.sys.country;
+  document.getElementById('w-date').textContent = dateStr;
+  document.getElementById('w-temp').textContent = temp;
+  document.getElementById('w-desc').textContent = d.weather[0].description;
+  document.getElementById('w-feels').textContent = feels;
+  document.getElementById('w-humid').textContent = d.main.humidity + '%';
+  document.getElementById('w-wind').textContent = Math.round(d.wind.speed) + 'm/s';
+
+  const sunrise = new Date(d.sys.sunrise * 1000).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Kolkata' });
+  const sunset = new Date(d.sys.sunset * 1000).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Kolkata' });
+  document.getElementById('w-sunrise').textContent = sunrise;
+  document.getElementById('w-sunset').textContent = sunset;
+
+  const icons = { Clear: 'Sun', Clouds: 'Cloud', Rain: 'Rain', Drizzle: 'Drizzle', Thunderstorm: 'Storm', Snow: 'Snow', Mist: 'Mist', Fog: 'Fog' };
+  document.getElementById('w-icon').textContent = icons[d.weather[0].main] || 'Weather';
+
+  const bg = document.getElementById('weather-bg');
+  const main = d.weather[0].main;
+  const hour = new Date().getHours();
+  if (main === 'Clear' && hour >= 6 && hour < 20) bg.style.background = 'linear-gradient(135deg,#f97316,#eab308,#fb923c)';
+  else if (main === 'Rain' || main === 'Drizzle') bg.style.background = 'linear-gradient(135deg,#1e3a5f,#1e40af,#1d4ed8)';
+  else if (main === 'Thunderstorm') bg.style.background = 'linear-gradient(135deg,#0f172a,#1e293b,#334155)';
+  else if (main === 'Snow') bg.style.background = 'linear-gradient(135deg,#e0f2fe,#bae6fd,#7dd3fc)';
+  else if (hour < 6 || hour >= 20) bg.style.background = 'linear-gradient(135deg,#0f172a,#1e1b4b,#0f0a1e)';
+  else bg.style.background = 'linear-gradient(135deg,#1e3a5f,#2d5016,#1e4d3a)';
+}
+
+function renderForecast(list) {
+  const days = {};
+  list.forEach(item => {
+    const date = new Date(item.dt * 1000).toLocaleDateString('en-IN', { weekday: 'short', timeZone: 'Asia/Kolkata' });
+    if (!days[date]) days[date] = item;
+  });
+  const container = document.getElementById('forecast-container');
+  container.innerHTML = '';
+  Object.entries(days).slice(0, 5).forEach(([day, item]) => {
+    const temp = STATE.weatherUnit === 'C' ? Math.round(item.main.temp) + 'C' : Math.round(item.main.temp * 9 / 5 + 32) + 'F';
+    const icons = { Clear: 'Sun', Clouds: 'Cloud', Rain: 'Rain', Drizzle: 'Rain', Thunderstorm: 'Storm', Snow: 'Snow' };
+    const card = document.createElement('div');
+    card.className = 'forecast-card';
+    card.innerHTML = '<div class="forecast-day">' + day + '</div><div class="forecast-icon">' + (icons[item.weather[0].main] || 'W') + '</div><div class="forecast-temp">' + temp + '</div>';
+    container.appendChild(card);
+  });
+}
+
+function showFallbackWeather(city) {
+  STATE.weatherData = {
+    name: city, sys: { country: 'IN', sunrise: Math.floor(Date.now()/1000) - 3600, sunset: Math.floor(Date.now()/1000) + 3600 },
+    main: { temp: 28, feels_like: 32, humidity: 72 },
+    wind: { speed: 12 },
+    weather: [{ main: 'Clouds', description: 'partly cloudy' }],
+  };
+  renderWeather();
+  if (STATE.openWindow === 'weather') showToast('Warning: Showing sample data. Add OpenWeatherMap API key for real weather.');
+}
+
+// ============================================================
+// NEWS
+// ============================================================
+function setupNews() {}
+
+async function fetchNews(category) {
+  const container = document.getElementById('news-container');
+  if (!container) return;
+  container.innerHTML = '<div class="loader"><div class="loader-ring"></div></div>';
+
+  const apiKey = STATE.apiKeys.gnews;
+  if (!apiKey) {
+    renderFallbackNews();
+    return;
+  }
+
+  try {
+    const resp = await fetch('https://gnews.io/api/v4/top-headlines?category=' + category + '&lang=en&country=in&max=10&apikey=' + apiKey);
+    if (!resp.ok) throw new Error();
+    const data = await resp.json();
+    if (!data.articles || data.articles.length === 0) throw new Error();
+    renderNews(data.articles);
+  } catch {
+    renderFallbackNews();
+  }
+}
+
+function renderNews(articles) {
+  const container = document.getElementById('news-container');
+  if (!container) return;
+  container.innerHTML = '';
+  articles.forEach(article => {
+    const card = document.createElement('div');
+    card.className = 'news-card';
+    const img = article.image ? '<img src="' + article.image + '" class="news-img" onerror="this.style.display=\'none\'">' : '<div class="news-img">News</div>';
+    card.innerHTML = img + '<div class="news-title">' + article.title + '</div><div class="news-meta">' + (article.source?.name || 'Unknown') + ' - ' + new Date(article.publishedAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) + '</div>';
+    card.addEventListener('click', () => {
+      closeAllWindows();
+      addUserMessage('Read: ' + article.title);
+      addAIMessage(article.description || 'Article summary not available. Visit the source for full details.');
+    });
+    container.appendChild(card);
+  });
+}
+
+function renderFallbackNews() {
+  const container = document.getElementById('news-container');
+  if (!container) return;
+  const fallback = [
+    { title: 'AI Technology Advances Rapidly in 2025', desc: 'New AI models are transforming industries worldwide with unprecedented capabilities.', source: 'Tech Today', time: '2 hours ago' },
+    { title: 'Climate Summit Reaches New Agreement', desc: 'World leaders agree on ambitious carbon reduction targets for the next decade.', source: 'Global News', time: '4 hours ago' },
+    { title: 'Stock Markets Hit Record Highs', desc: 'Major indices close at all-time records amid positive economic indicators.', source: 'Finance Wire', time: '5 hours ago' },
+    { title: 'Space Exploration Mission Launched', desc: 'New spacecraft heads to Mars carrying scientific instruments and experiments.', source: 'Space News', time: '6 hours ago' },
+    { title: 'Health Innovation Breakthrough', desc: 'Researchers develop new treatment method with promising early trial results.', source: 'Health Daily', time: '8 hours ago' },
+  ];
+  container.innerHTML = '';
+  fallback.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'news-card';
+    card.innerHTML = '<div class="news-img" style="height:80px;font-size:14px;">News</div><div class="news-title">' + item.title + '</div><div class="news-meta">' + item.source + ' - ' + item.time + '</div>';
+    card.addEventListener('click', () => { closeAllWindows(); addUserMessage('Tell me about: ' + item.title); addAIMessage(item.desc + '\n\nNote: Add GNews API key in Settings for real news articles.'); });
+    container.appendChild(card);
+  });
+}
+
+// ============================================================
+// MAPS
+// ============================================================
+function refreshDangerZones() {
+  // Simulate danger zone refresh
+  const zones = document.getElementById('danger-zones-list');
+  if (!zones) return;
+  // Data already rendered statically, update timestamp
+  setTimeout(refreshDangerZones, 60000);
+}
+
+// ============================================================
+// CAMERA
+// ============================================================
+async function handleCapture() {
+  const result = document.getElementById('camera-result');
+  const apiKey = STATE.apiKeys.openrouter || STATE.apiKeys.gemini;
+  result.style.display = 'block';
+  result.textContent = 'Camera capture requires a native mobile app. In this web version, you can upload an image using the File Analyzer window for AI vision analysis.';
+  if (STATE.speakResponses) speakText('Camera capture requires native app. Use file analyzer for image analysis.');
+}
+
+// ============================================================
+// FILE ANALYZER
+// ============================================================
+let selectedFile = null;
+
+function handleFileSelect(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  selectedFile = file;
+  document.getElementById('file-selected').style.display = 'block';
+  document.getElementById('file-name').textContent = file.name;
+  document.getElementById('file-size').textContent = (file.size / 1024).toFixed(1) + ' KB';
+  document.getElementById('file-drop').style.display = 'none';
+}
+
+async function analyzeFile() {
+  if (!selectedFile) { showToast('Please select a file first'); return; }
+  const prompt = document.getElementById('file-prompt').value.trim() || 'Summarize this file and extract key information.';
+  const resultEl = document.getElementById('file-result');
+  resultEl.style.display = 'block';
+  resultEl.textContent = 'Analyzing...';
+
+  const apiKey = STATE.apiKeys.openrouter || STATE.apiKeys.gemini;
+  if (!apiKey) {
+    resultEl.textContent = 'AI analysis requires an API key. Add OpenRouter or Gemini API key in Settings. File: ' + selectedFile.name + ' | Size: ' + (selectedFile.size / 1024).toFixed(1) + ' KB | Prompt: ' + prompt;
+    saveFileHistory(selectedFile.name, prompt, 'API key required');
+    return;
+  }
+
+  try {
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      let content = '';
+      if (selectedFile.type.startsWith('text') || selectedFile.name.endsWith('.csv') || selectedFile.name.endsWith('.json')) {
+        content = e.target.result;
+      } else {
+        content = '[Binary file: ' + selectedFile.name + ' - ' + (selectedFile.size/1024).toFixed(1) + 'KB]';
+      }
+
+      const resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + apiKey, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: FAST_MODEL,
+          messages: [
+            { role: 'system', content: 'You are a file analysis assistant. Analyze files and answer questions concisely. No emoji.' },
+            { role: 'user', content: prompt + '\n\nFile content:\n' + content.substring(0, 4000) },
+          ],
+        }),
+      });
+      const data = await resp.json();
+      const analysis = data.choices?.[0]?.message?.content || 'Analysis failed';
+      resultEl.textContent = analysis;
+      saveFileHistory(selectedFile.name, prompt, analysis);
+      if (STATE.speakResponses) speakText(analysis.substring(0, 300));
+    };
+    if (selectedFile.type.startsWith('text') || selectedFile.name.endsWith('.csv') || selectedFile.name.endsWith('.json')) {
+      reader.readAsText(selectedFile);
+    } else {
+      reader.readAsArrayBuffer(selectedFile);
+      reader.onload = async () => {
+        resultEl.textContent = 'Binary file analysis: ' + selectedFile.name + '. For PDF/DOCX analysis, use a backend service with text extraction.';
+        saveFileHistory(selectedFile.name, prompt, 'Binary file - backend required');
+      };
+    }
+  } catch (e) {
+    resultEl.textContent = 'Warning: Analysis failed. ' + e.message;
+  }
+}
+
+function saveFileHistory(name, prompt, result) {
+  const item = { id: Date.now(), name, prompt, result: result.substring(0, 200), date: new Date().toISOString() };
+  STATE.fileHistory.unshift(item);
+  if (STATE.fileHistory.length > 10) STATE.fileHistory = STATE.fileHistory.slice(0, 10);
+  storage.set(STORAGE_KEYS.fileHistory, STATE.fileHistory);
+  renderFileHistory();
+}
+
+function renderFileHistory() {
+  const container = document.getElementById('file-history');
+  if (!container) return;
+  container.innerHTML = '';
+  STATE.fileHistory.forEach(item => {
+    const el = document.createElement('div');
+    el.className = 'file-history-item';
+    el.innerHTML = '<div><div class="file-history-name">' + item.name + '</div><div class="file-history-date">' + new Date(item.date).toLocaleDateString('en-IN') + '</div></div>';
+    container.appendChild(el);
+  });
+}
+
+function setupFileHistory() {
+  renderFileHistory();
+}
+
+// ============================================================
+// NOTES
+// ============================================================
+function setupNotes() {
+  if (STATE.notes.length === 0) {
+    STATE.notes = getDefaultNotes();
+    storage.set(STORAGE_KEYS.notes, STATE.notes);
+  }
+}
+
+function showNoteEditor() {
+  document.getElementById('note-editor').style.display = 'flex';
+  document.getElementById('note-add-btn').style.display = 'none';
+  document.getElementById('note-cancel-btn').style.display = 'inline-flex';
+  document.getElementById('note-title-input').value = '';
+  document.getElementById('note-content-input').value = '';
+  document.getElementById('note-title-input').focus();
+}
+
+function hideNoteEditor() {
+  document.getElementById('note-editor').style.display = 'none';
+  document.getElementById('note-add-btn').style.display = 'block';
+  document.getElementById('note-cancel-btn').style.display = 'none';
+}
+
+function saveNote() {
+  const title = document.getElementById('note-title-input').value.trim() || 'Untitled Note';
+  const content = document.getElementById('note-content-input').value.trim();
+  if (!content) { showToast('Please enter note content'); return; }
+  const note = { id: Date.now(), title, content, date: new Date().toISOString() };
+  STATE.notes.unshift(note);
+  storage.set(STORAGE_KEYS.notes, STATE.notes);
+  hideNoteEditor();
+  renderNotes();
+  showToast('Note saved');
+}
+
+function renderNotes() {
+  const container = document.getElementById('notes-list');
+  if (!container) return;
+  container.innerHTML = '';
+  STATE.notes.forEach(note => {
+    const card = document.createElement('div');
+    card.className = 'note-card';
+    card.innerHTML = '<div class="note-title">' + note.title + '</div><div class="note-preview">' + note.content + '</div><div class="note-date">' + new Date(note.date).toLocaleDateString('en-IN') + '</div><button class="note-delete" data-id="' + note.id + '">x</button>';
+    card.querySelector('.note-delete').addEventListener('click', (e) => {
+      e.stopPropagation();
+      deleteNote(note.id);
+    });
+    card.addEventListener('click', () => viewNote(note));
+    container.appendChild(card);
+  });
+}
+
+function deleteNote(id) {
+  STATE.notes = STATE.notes.filter(n => n.id !== id);
+  storage.set(STORAGE_KEYS.notes, STATE.notes);
+  renderNotes();
+  showToast('Note deleted');
+}
+
+function viewNote(note) {
+  document.getElementById('note-editor').style.display = 'flex';
+  document.getElementById('note-title-input').value = note.title;
+  document.getElementById('note-content-input').value = note.content;
+  document.getElementById('note-add-btn').style.display = 'none';
+  document.getElementById('note-cancel-btn').style.display = 'inline-flex';
+}
+
+// ============================================================
+// TASKS
+// ============================================================
+function setupTasks() {
+  if (STATE.tasks.length === 0) {
+    STATE.tasks = getDefaultTasks();
+    storage.set(STORAGE_KEYS.tasks, STATE.tasks);
+  }
+}
+
+function addTask() {
+  const input = document.getElementById('task-input');
+  const text = input.value.trim();
+  if (!text) return;
+  const task = { id: Date.now(), text, done: false, date: new Date().toISOString() };
+  STATE.tasks.unshift(task);
+  storage.set(STORAGE_KEYS.tasks, STATE.tasks);
+  input.value = '';
+  renderTasks();
+  showToast('Task added');
+}
+
+function renderTasks() {
+  const container = document.getElementById('tasks-list');
+  if (!container) return;
+
+  let filtered = STATE.tasks;
+  if (STATE.taskFilter === 'active') filtered = STATE.tasks.filter(t => !t.done);
+  if (STATE.taskFilter === 'completed') filtered = STATE.tasks.filter(t => t.done);
+
+  container.innerHTML = '';
+  filtered.forEach(task => {
+    const item = document.createElement('div');
+    item.className = 'task-item';
+    const cb = document.createElement('div');
+    cb.className = 'task-checkbox ' + (task.done ? 'checked' : '');
+    if (task.done) cb.textContent = 'Done';
+    cb.addEventListener('click', () => toggleTask(task.id));
+    const textEl = document.createElement('div');
+    textEl.className = 'task-text ' + (task.done ? 'done' : '');
+    textEl.textContent = task.text;
+    const delBtn = document.createElement('button');
+    delBtn.className = 'task-del';
+    delBtn.textContent = 'x';
+    delBtn.addEventListener('click', () => deleteTask(task.id));
+    item.appendChild(cb);
+    item.appendChild(textEl);
+    item.appendChild(delBtn);
+    container.appendChild(item);
+  });
+
+  const done = STATE.tasks.filter(t => t.done).length;
+  const counter = document.getElementById('task-counter');
+  if (counter) counter.textContent = done + '/' + STATE.tasks.length + ' completed';
+
+  updateAdminStats();
+}
+
+function toggleTask(id) {
+  const task = STATE.tasks.find(t => t.id === id);
+  if (task) { task.done = !task.done; storage.set(STORAGE_KEYS.tasks, STATE.tasks); renderTasks(); }
+}
+
+function deleteTask(id) {
+  STATE.tasks = STATE.tasks.filter(t => t.id !== id);
+  storage.set(STORAGE_KEYS.tasks, STATE.tasks);
+  renderTasks();
+}
+
+// ============================================================
+// GOOGLE SEARCH
+// ============================================================
+async function googleSearch(query) {
+  query = query || document.getElementById('google-search-input').value.trim();
+  if (!query) return;
+
+  const container = document.getElementById('google-results');
+  container.innerHTML = '<div class="loader"><div class="loader-ring"></div></div>';
+
+  const apiKey = STATE.apiKeys.google;
+  if (!apiKey) {
+    renderFallbackSearch(query);
+    return;
+  }
+
+  try {
+    const resp = await fetch('https://www.googleapis.com/customsearch/v1?q=' + encodeURIComponent(query) + '&key=' + apiKey + '&cx=017576662512468239146:omuauf_lfve&num=8');
+    if (!resp.ok) throw new Error();
+    const data = await resp.json();
+    if (!data.items) throw new Error();
+    container.innerHTML = '';
+    data.items.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'search-result-card';
+      card.innerHTML = '<div class="search-result-title">' + item.title + '</div><div class="search-result-url">' + item.displayLink + '</div><div class="search-result-snippet">' + (item.snippet || '') + '</div>';
+      card.addEventListener('click', () => {
+        closeAllWindows();
+        addUserMessage('Read search result: ' + item.title);
+        addAIMessage(item.snippet || item.title);
+      });
+      container.appendChild(card);
+    });
+  } catch {
+    renderFallbackSearch(query);
+  }
+}
+
+function renderFallbackSearch(query) {
+  const container = document.getElementById('google-results');
+  const results = [
+    { title: query + ' - Wikipedia', url: 'en.wikipedia.org', snippet: 'Wikipedia article about ' + query + '. Click to read in chat.' },
+    { title: query + ' - Latest News', url: 'news.google.com', snippet: 'Latest news and updates about ' + query + ' from trusted sources.' },
+    { title: query + ' - Official Website', url: query.toLowerCase().replace(/\s/g, '') + '.com', snippet: 'Official information and resources about ' + query + '.' },
+  ];
+  container.innerHTML = '';
+  results.forEach(r => {
+    const card = document.createElement('div');
+    card.className = 'search-result-card';
+    card.innerHTML = '<div class="search-result-title">' + r.title + '</div><div class="search-result-url">' + r.url + '</div><div class="search-result-snippet">' + r.snippet + '</div>';
+    card.addEventListener('click', () => {
+      closeAllWindows();
+      addUserMessage('Search: ' + query);
+      addAIMessage('Search results for "' + query + '": ' + r.snippet + '\n\nAdd Google Search API key in Settings for real results.');
+    });
+    container.appendChild(card);
+  });
+  showToast('Warning: Add Google API key for real search results');
+}
+
+// ============================================================
+// CONTACTS
+// ============================================================
+function setupContacts() {
+  if (STATE.contacts.length === 0) {
+    STATE.contacts = getDefaultContacts();
+    storage.set(STORAGE_KEYS.contacts, STATE.contacts);
+  }
+}
+
+function renderContacts(contacts = null) {
+  const list = contacts || STATE.contacts;
+  const container = document.getElementById('contacts-list');
+  if (!container) return;
+  container.innerHTML = '';
+
+  // Populate WhatsApp contact select
+  const waSelect = document.getElementById('wa-contact-select');
+  if (waSelect) {
+    waSelect.innerHTML = '<option value="">Select Contact</option>';
+    STATE.contacts.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c.phone;
+      opt.textContent = c.name + ' - ' + c.phone;
+      waSelect.appendChild(opt);
+    });
+    waSelect.addEventListener('change', () => {
+      const val = waSelect.value;
+      if (val) {
+        const phone = val.replace('+91', '').replace('+1', '');
+        document.getElementById('wa-phone').value = phone;
+      }
+    });
+  }
+
+  list.forEach(contact => {
+    const card = document.createElement('div');
+    card.className = 'contact-card';
+    card.innerHTML = '<div class="contact-avatar">' + (contact.avatar || contact.name[0]) + '</div><div class="contact-info"><div class="contact-name">' + contact.name + '</div><div class="contact-phone">' + contact.phone + '</div></div><div class="contact-actions"><button class="contact-action-btn" title="Call">Call</button><button class="contact-action-btn" title="WhatsApp">WA</button></div>';
+    card.querySelector('[title="Call"]').addEventListener('click', () => { window.location.href = 'tel:' + contact.phone; });
+    card.querySelector('[title="WhatsApp"]').addEventListener('click', () => {
+      closeAllWindows();
+      openWindow('whatsapp');
+      const phone = contact.phone.replace(/\D/g, '').replace(/^91/, '');
+      document.getElementById('wa-phone').value = phone;
+    });
+    container.appendChild(card);
+  });
+}
+
+function filterContacts(query) {
+  const filtered = STATE.contacts.filter(c => c.name.toLowerCase().includes(query.toLowerCase()) || c.phone.includes(query));
+  renderContacts(filtered);
+}
+
+async function loadDeviceContacts() {
+  showToast('Device contacts require native app. Showing saved contacts.');
+}
+
+function saveContact() {
+  const name = document.getElementById('contact-name-input').value.trim();
+  const phone = document.getElementById('contact-phone-input').value.trim();
+  if (!name || !phone) { showToast('Please enter name and phone'); return; }
+  const contact = { id: Date.now(), name, phone, avatar: name[0].toUpperCase() };
+  STATE.contacts.unshift(contact);
+  storage.set(STORAGE_KEYS.contacts, STATE.contacts);
+  document.getElementById('add-contact-form').style.display = 'none';
+  document.getElementById('contact-name-input').value = '';
+  document.getElementById('contact-phone-input').value = '';
+  renderContacts();
+  showToast('Contact saved');
+}
+
+// ============================================================
+// EXTRA FEATURES (20+)
+// ============================================================
+const EXTRA_FEATURES = [
+  { icon: 'Calc', name: 'Calculator', desc: 'Quick math calculator', action: 'calculator' },
+  { icon: 'QR', name: 'QR Code', desc: 'Generate QR codes', action: 'qrcode' },
+  { icon: 'Timer', name: 'Timer', desc: 'Stopwatch and timer', action: 'timer' },
+  { icon: 'Units', name: 'Unit Converter', desc: 'Convert units', action: 'converter' },
+  { icon: 'Dict', name: 'Dictionary', desc: 'Word definitions', action: 'dictionary' },
+  { icon: 'Trans', name: 'Translator', desc: 'Translate text', action: 'translator' },
+  { icon: 'Joke', name: 'Jokes', desc: 'Random jokes', action: 'jokes' },
+  { icon: 'Facts', name: 'Fun Facts', desc: 'Interesting facts', action: 'facts' },
+  { icon: 'Ipsum', name: 'Lorem Ipsum', desc: 'Generate placeholder text', action: 'lorem' },
+  { icon: 'Pass', name: 'Password Gen', desc: 'Secure passwords', action: 'password' },
+  { icon: 'Color', name: 'Color Picker', desc: 'Pick and convert colors', action: 'color' },
+  { icon: 'Hash', name: 'Hash Tool', desc: 'MD5, SHA hashing', action: 'hash' },
+  { icon: 'Base', name: 'Base64', desc: 'Encode and decode', action: 'base64' },
+  { icon: 'Morse', name: 'Morse Code', desc: 'Encode Morse code', action: 'morse' },
+  { icon: 'Pomo', name: 'Pomodoro', desc: '25min focus timer', action: 'pomodoro' },
+  { icon: 'Math', name: 'Math Solver', desc: 'Solve equations', action: 'math' },
+  { icon: 'Date', name: 'Date Calc', desc: 'Date differences', action: 'datecalc' },
+  { icon: 'Age', name: 'Age Calc', desc: 'Calculate your age', action: 'agecalc' },
+  { icon: 'BMI', name: 'BMI Calculator', desc: 'Body mass index', action: 'bmi' },
+  { icon: 'Tip', name: 'Tip Calculator', desc: 'Split bills easily', action: 'tip' },
+  { icon: 'Coin', name: 'Coin Flip', desc: 'Random coin toss', action: 'coin' },
+  { icon: 'Dice', name: 'Dice Roller', desc: 'Roll virtual dice', action: 'dice' },
+  { icon: 'Breath', name: 'Breathe', desc: 'Breathing exercise', action: 'breathe' },
+  { icon: 'Clock', name: 'World Clock', desc: 'Multiple time zones', action: 'worldclock' },
+];
+
+function setupExtras() {}
+
+function renderExtras() {
+  const grid = document.getElementById('extras-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  EXTRA_FEATURES.forEach(f => {
+    const card = document.createElement('div');
+    card.className = 'feature-card';
+    card.innerHTML = '<div class="feature-icon">' + f.icon + '</div><div class="feature-name">' + f.name + '</div><div class="feature-desc">' + f.desc + '</div>';
+    card.addEventListener('click', () => runExtraFeature(f.action, f.name));
+    grid.appendChild(card);
+  });
+}
+
+function runExtraFeature(action, name) {
+  closeAllWindows();
+  switch (action) {
+    case 'calculator': addAIMessage('Calculator: Say or type a math expression like "100 + 250 * 3" and I will calculate it.'); break;
+    case 'qrcode': addAIMessage('QR Code Generator: Say "generate QR for [URL or text]" and I will create a QR code URL for you.'); break;
+    case 'timer': startTimer(); break;
+    case 'converter': addAIMessage('Unit Converter: Say "convert 100 km to miles" or "convert 50 kg to pounds" for quick conversions.'); break;
+    case 'dictionary': addAIMessage('Dictionary: Type "define [word]" to get the definition, usage, and examples.'); break;
+    case 'translator': addAIMessage('Translator: Say "translate [text] to Hindi/French/Spanish" and I will translate it.'); break;
+    case 'jokes': fetchJoke(); break;
+    case 'facts': fetchFact(); break;
+    case 'lorem': generateLorem(); break;
+    case 'password': generatePassword(); break;
+    case 'color': addAIMessage('Color Tool: Type any color name or hex code and I will give you its RGB values and related colors.'); break;
+    case 'hash': addAIMessage('Hash Tool: Type "hash [text]" to generate a simple hash. For security-grade hashing use dedicated tools.'); break;
+    case 'base64': addAIMessage('Base64: Type "encode [text]" or "decode [base64 string]" to convert.'); break;
+    case 'morse': addAIMessage('Morse Code: Type "morse [text]" to convert to Morse code.'); break;
+    case 'pomodoro': startPomodoro(); break;
+    case 'math': addAIMessage('Math Solver: Type any equation like "solve x^2 - 4 = 0" or "what is integral of x^2" and I will solve it.'); break;
+    case 'datecalc': addAIMessage('Date Calculator: Type "days between 01/01/2024 and today" to calculate date differences.'); break;
+    case 'agecalc': const age = prompt('Enter your birth year:'); if (age) { const a = new Date().getFullYear() - parseInt(age); addAIMessage('Age calculation: If you were born in ' + age + ', you are approximately ' + a + ' years old.'); } break;
+    case 'bmi': bmiCalc(); break;
+    case 'tip': tipCalc(); break;
+    case 'coin': addAIMessage('Coin Flip result: ' + (Math.random() > 0.5 ? 'HEADS' : 'TAILS')); break;
+    case 'dice': const sides = 6; const roll = Math.floor(Math.random() * sides) + 1; addAIMessage('Dice Roll (d' + sides + '): You rolled a ' + roll); break;
+    case 'breathe': startBreathing(); break;
+    case 'worldclock': showWorldClock(); break;
+    default: addAIMessage(name + ' feature activated. Ask me anything related to ' + name + '.');
+  }
+}
+
+function startTimer() {
+  let seconds = 0;
+  const interval = setInterval(() => {
+    seconds++;
+    const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+    const s = (seconds % 60).toString().padStart(2, '0');
+    const existing = document.getElementById('timer-msg');
+    if (existing) {
+      existing.querySelector('.msg-bubble').textContent = 'Stopwatch: ' + m + ':' + s;
+    }
+  }, 1000);
+  const msg = { id: 'timer-msg', role: 'ai', content: 'Stopwatch: 00:00', time: getTimeStr() };
+  STATE.messages.push(msg);
+  renderChat();
+  const lastWrapper = document.getElementById('chat-area').lastElementChild;
+  if (lastWrapper) lastWrapper.id = 'timer-msg';
+  showToast('Timer started. Say stop or refresh to end.');
+  setTimeout(() => clearInterval(interval), 3600000);
+}
+
+function startPomodoro() {
+  let seconds = 25 * 60;
+  addAIMessage('Pomodoro timer started: 25 minutes of focused work. I will notify you when done.');
+  const interval = setInterval(() => {
+    seconds--;
+    if (seconds <= 0) {
+      clearInterval(interval);
+      addAIMessage('Pomodoro complete! Take a 5-minute break. Great work on staying focused.');
+      if (STATE.speakResponses) speakText('Pomodoro complete. Time for a break.');
+    }
+  }, 1000);
+}
+
+function fetchJoke() {
+  const jokes = [
+    'Why do programmers prefer dark mode? Because light attracts bugs.',
+    'I told my computer I needed a break. Now it will not stop sending me vacation deals.',
+    'Why did the AI go to school? To improve its neural network.',
+    'How many programmers does it take to change a light bulb? None, that is a hardware problem.',
+    'An AI walks into a bar. The bartender asks "What will it be?" The AI says "Undefined."',
+    'Why do Java developers wear glasses? Because they do not C#.',
+  ];
+  addAIMessage(jokes[Math.floor(Math.random() * jokes.length)]);
+}
+
+function fetchFact() {
+  const facts = [
+    'The average person walks about 100,000 miles in their lifetime, which is more than four times around the Earth.',
+    'Honey never spoils. Archaeologists have found 3000-year-old honey in Egyptian tombs that is still perfectly edible.',
+    'A group of flamingos is called a flamboyance.',
+    'Bananas are technically berries, but strawberries are not.',
+    'The shortest war in history lasted only 38 to 45 minutes between Britain and Zanzibar in 1896.',
+    'Octopuses have three hearts and blue blood.',
+    'The human brain generates about 20 watts of electrical power, enough to power a dim light bulb.',
+  ];
+  addAIMessage('Fun Fact: ' + facts[Math.floor(Math.random() * facts.length)]);
+}
+
+function generateLorem() {
+  const lorem = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.';
+  addAIMessage(lorem);
+}
+
+function generatePassword() {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+  let pass = '';
+  for (let i = 0; i < 16; i++) pass += chars[Math.floor(Math.random() * chars.length)];
+  addAIMessage('Generated secure password (16 chars): ' + pass + '\n\nSave this somewhere safe. JARVIS does not store passwords.');
+}
+
+function bmiCalc() {
+  const weight = parseFloat(prompt('Enter weight in kg:'));
+  const height = parseFloat(prompt('Enter height in meters (e.g., 1.75):'));
+  if (weight && height) {
+    const bmi = (weight / (height * height)).toFixed(1);
+    let cat = bmi < 18.5 ? 'Underweight' : bmi < 25 ? 'Normal weight' : bmi < 30 ? 'Overweight' : 'Obese';
+    addAIMessage('BMI Result: ' + bmi + ' - Category: ' + cat + '\nHealthy BMI range is 18.5 to 24.9. Consult a doctor for personalized advice.');
+  }
+}
+
+function tipCalc() {
+  const bill = parseFloat(prompt('Enter bill amount:'));
+  const pct = parseFloat(prompt('Tip percentage (e.g., 15):')) || 15;
+  const people = parseInt(prompt('Number of people:')) || 1;
+  if (bill) {
+    const tip = (bill * pct / 100).toFixed(2);
+    const total = (bill + parseFloat(tip)).toFixed(2);
+    const perPerson = (parseFloat(total) / people).toFixed(2);
+    addAIMessage('Tip Calculator:\nBill: ' + bill + '\nTip (' + pct + '%): ' + tip + '\nTotal: ' + total + '\nPer person: ' + perPerson);
+  }
+}
+
+function startBreathing() {
+  addAIMessage('Breathing Exercise: 4-7-8 technique\n\n1. Inhale through nose for 4 seconds\n2. Hold your breath for 7 seconds\n3. Exhale slowly for 8 seconds\n\nRepeat 4 times for best results. This activates your parasympathetic nervous system.');
+  if (STATE.speakResponses) {
+    setTimeout(() => speakText('Inhale for 4 seconds'), 1000);
+    setTimeout(() => speakText('Hold for 7 seconds'), 6000);
+    setTimeout(() => speakText('Exhale for 8 seconds'), 14000);
+    setTimeout(() => speakText('Breathing exercise complete. You should feel calmer now.'), 23000);
+  }
+}
+
+function showWorldClock() {
+  const zones = [
+    ['New York', 'America/New_York'],
+    ['London', 'Europe/London'],
+    ['Dubai', 'Asia/Dubai'],
+    ['Kolkata', 'Asia/Kolkata'],
+    ['Singapore', 'Asia/Singapore'],
+    ['Tokyo', 'Asia/Tokyo'],
+    ['Sydney', 'Australia/Sydney'],
+    ['Los Angeles', 'America/Los_Angeles'],
+  ];
+  const times = zones.map(([city, tz]) => {
+    const t = new Intl.DateTimeFormat('en-IN', { timeZone: tz, hour: '2-digit', minute: '2-digit', hour12: true }).format(new Date());
+    return city + ': ' + t.toUpperCase();
+  }).join('\n');
+  addAIMessage('World Clock:\n' + times);
+}
+
+// ============================================================
+// ADMIN PANEL
+// ============================================================
+function openAdminPanel() {
+  closeSettings();
+  const panel = document.getElementById('admin-panel');
+  panel.style.display = 'flex';
+  updateAdminStats();
+  renderAdminTable();
+  renderAdminAPIStatus();
+  const netStatus = document.getElementById('admin-net-status');
+  if (netStatus) netStatus.textContent = STATE.networkOnline ? 'Connected' : 'Offline';
+  netStatus.style.color = STATE.networkOnline ? '#22c55e' : 'var(--red)';
+}
+
+function closeAdminPanel() {
+  document.getElementById('admin-panel').style.display = 'none';
+}
+
+function updateAdminStats() {
+  const msgs = document.getElementById('stat-messages');
+  const notes = document.getElementById('stat-notes');
+  const tasks = document.getElementById('stat-tasks');
+  if (msgs) msgs.textContent = STATE.messages.length;
+  if (notes) notes.textContent = STATE.notes.length;
+  if (tasks) tasks.textContent = STATE.tasks.length;
+}
+
+function logAdminActivity(type, content) {
+  STATE.adminActivity.unshift({
+    time: getTimeStr(),
+    type,
+    content: content.substring(0, 60),
+    model: STATE.currentModel === 'power' ? 'POWER' : 'FAST',
+  });
+  if (STATE.adminActivity.length > 50) STATE.adminActivity = STATE.adminActivity.slice(0, 50);
+}
+
+function renderAdminTable() {
+  const tbody = document.getElementById('admin-chat-table');
+  if (!tbody) return;
+  if (STATE.adminActivity.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="4" style="color:var(--text-muted);text-align:center;">No activity yet</td></tr>';
+    return;
+  }
+  tbody.innerHTML = '';
+  STATE.adminActivity.slice(0, 20).forEach(a => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = '<td>' + a.time + '</td><td style="color:' + (a.type === 'user' ? 'var(--teal-light)' : 'var(--purple-light)') + '">' + a.type.toUpperCase() + '</td><td>' + a.content + '</td><td>' + a.model + '</td>';
+    tbody.appendChild(tr);
+  });
+}
+
+function renderAdminAPIStatus() {
+  const container = document.getElementById('admin-api-status');
+  if (!container) return;
+  const keys = [
+    ['OpenRouter', 'openrouter'],
+    ['OpenWeatherMap', 'weather'],
+    ['GNews', 'gnews'],
+    ['WhatsApp', 'whatsapp'],
+    ['ElevenLabs', 'elevenlabs'],
+    ['Google Search', 'google'],
+    ['Google Maps', 'maps'],
+    ['Gemini', 'gemini'],
+  ];
+  container.innerHTML = '';
+  keys.forEach(([name, key]) => {
+    const val = STATE.apiKeys[key];
+    const el = document.createElement('div');
+    el.style.cssText = 'display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px;';
+    el.innerHTML = '<span style="color:var(--text-secondary);">' + name + '</span><span style="color:' + (val ? '#22c55e' : 'var(--red)') + ';">' + (val ? 'Configured' : 'Missing') + '</span>';
+    container.appendChild(el);
+  });
+}
+
+// ============================================================
+// PWA
+// ============================================================
+function installApp() {
+  if (STATE.deferredPrompt) {
+    STATE.deferredPrompt.prompt();
+    STATE.deferredPrompt.userChoice.then(() => {
+      STATE.deferredPrompt = null;
+      document.getElementById('install-prompt').classList.remove('show');
+    });
+  }
+}
+
+// ============================================================
+// CLIPBOARD WATCHER
+// ============================================================
+function startClipboardWatcher() {
+  setInterval(async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      if (text && text !== STATE.lastClipboard && text.length > 5) {
+        STATE.lastClipboard = text;
+        if (text.startsWith('http') && STATE.openWindow === null) {
+          // Silent - just track
+        }
+      }
+    } catch {}
+  }, 5000);
+}
+
+// ============================================================
+// UTILITIES
+// ============================================================
+function autoGrowTextarea(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 90) + 'px';
+}
+
+function showToast(msg, duration = 2500) {
+  const toast = document.getElementById('toast');
+  if (!toast) return;
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), duration);
+}
+
+// ============================================================
+// SERVICE WORKER
+// ============================================================
+if ('serviceWorker' in navigator) {
+  const swCode = `
+    const CACHE = 'jarvis-v1';
+    const ASSETS = ['/'];
+    self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS))));
+    self.addEventListener('fetch', e => e.respondWith(
+      fetch(e.request).catch(() => caches.match(e.request))
+    ));
+  `;
+  const blob = new Blob([swCode], { type: 'application/javascript' });
+  const swURL = URL.createObjectURL(blob);
+  navigator.serviceWorker.register(swURL).catch(() => {});
+}
+
+// ============================================================
+// START
+// ============================================================
+init();
+</script>
+</div>
+</body>
+</html>
